@@ -228,6 +228,8 @@ public class Rectangle{
                         case 'y':
                             canvas.setForegroundColor("yellow");
                             break;
+                        case '.':
+                            canvas.setForegroundColor("brown");
                     }
                     // Dibuja cada celda del tablero
                     canvas.drawRectangle(
