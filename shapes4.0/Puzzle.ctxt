@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.target=Puzzle
+comment0.text=\r\n\ Clase\ que\ permite\ simular\ una\ situacion\ inspirada\ en\ el\ "Problem\ F"\ de\ la\ maraton\r\n\ de\ programacion\ internacional\ 2023\ "Tilting\ Tiles"\r\n\ @author\:\ Camilo\ Fernandez\r\n\ @author\:\ Andr\u00E9s\ Sep\u00FAlveda\r\n\ @version\:\ 1.0\r\n
+comment1.params=args
+comment1.target=void\ main(java.lang.String[])
+comment2.params=fila\ columna
+comment2.target=void\ eliminarBaldosa(int,\ int)
+comment3.params=filaActual\ columnaActual\ nuevaFila\ nuevaColumna
+comment3.target=void\ reubicarBaldosa(int,\ int,\ int,\ int)
+numComments=4
