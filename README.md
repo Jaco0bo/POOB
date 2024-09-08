@@ -19,8 +19,9 @@ aplica sobre una baldosa hace que ésta y las baldosas vecinas se peguen.
 2. El estado actual del proyecto es
 
 
-3. Andrés Sepúlveda: 25 horas
-   Camilo Fernandez: 22 horas
+3. Tiempo total invertido:
+- Andrés Sepúlveda: 25 horas
+- Camilo Fernandez: 22 horas
 
 4. El mayor logro fue
 
