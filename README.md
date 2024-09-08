@@ -13,13 +13,18 @@ aplica sobre una baldosa hace que ésta y las baldosas vecinas se peguen.
 - Código siguiendo los estándares de documentación de java.
 
 ### Retroespectiva
-1. Los mini-ciclos escojidos fueron
+#### 1. Los mini-ciclos fueron:
+- Mini-ciclo 1: Requisito1(create) y Requisito2(add/relocate/delete tile).
+- Mini-ciclo 2: Requisito3(add/delete glue), Requisito4(tilt) y Requisito7(make visible/invisible).
+- Mini-ciclo 3: Requisito5,6(consult) y Requisito8(finish).
 
+Definimos estos mini-ciclos ya que nos parecio el orden correcto en el cual trabajar empezando por la creacion de los distintos objetos como el tablero, baldosas y pegante y luego definir los distintos metodos para estos, de esta forma
+seguiamos un orden logico que nos facilitaba la programacion y tambien el diseño de los diagramas en astah.
 
-2. El estado actual del proyecto es
+2. El estado actual del proyecto es casi completo, nos faltaron algunas cosas del ultimo minimo ciclo ya
+   que no entendiamos muy bien que era lo que tocaba hacer y no nos dio tiempo a terminarlo.
 
-
-3. Tiempo total invertido:
+#### 3. Tiempo total invertido:
 - Andrés Sepúlveda: 25 horas
 - Camilo Fernandez: 22 horas
 
