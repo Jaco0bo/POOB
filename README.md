@@ -7,7 +7,7 @@ Tiles. En este simulador se desea probar una un pegante especial, el gummy glue,
 aplica sobre una baldosa hace que ésta y las baldosas vecinas se peguen.
 
 ### Requisitos de entrega
-- Diseño en la herramienta astah
+- Diseño en la herramienta astah.
 - Diagrama de clases con atributos y métodos privados y públicos.
-- Diagrama de secuencia de los métodos construidos de la clase principal
+- Diagrama de secuencia de los métodos construidos de la clase principal.
 - Código siguiendo los estándares de documentación de java.
