@@ -18,7 +18,7 @@ public class Rectangle{
     private int xPosition;
     private int yPosition;
     private String color;
-    private boolean isVisible;
+    public boolean isVisible;
     private char[][] board;
 
     /**
@@ -241,6 +241,20 @@ public class Rectangle{
                 }
             }
             canvas.wait(10); // Opcional: espera un momento para la visualización    
+        }
+    }
+    
+    public void makeVisibleTable(){
+        if (!isVisible) {
+            isVisible = true;
+            drawBoard(); // Dibuja el tablero y las baldosas cuando se hace visible
+        }
+    }
+
+    public void makeInvisibleTable(){
+        if (isVisible) {
+            erase(); // Borra el tablero del canvas
+            isVisible = false;
         }
     }
     
