@@ -244,4 +244,28 @@ public class Rectangle{
         }
     }
 
+        public void eliminarBaldosa(int fila, int columna) {
+        if (fila >= 0 && fila < board.length && columna >= 0 && columna < board[0].length) {
+            board[fila][columna] = '.'; // Baldosa eliminada con un punto 
+            System.out.println("Baldosa eliminada en (" + fila + ", " + columna + ")");
+            drawBoard(); // Redibujar el tablero
+        } else {
+            System.out.println("Posición inválida");
+        }
+    }
+    
+        public void reubicarBaldosa(int filaActual, int columnaActual, int nuevaFila, int nuevaColumna) {
+        if (filaActual >= 0 && filaActual < board.length && columnaActual >= 0 && columnaActual < board[0].length
+            && nuevaFila >= 0 && nuevaFila < board.length && nuevaColumna >= 0 && nuevaColumna < board[0].length) {
+            char baldosa = board[filaActual][columnaActual];
+            board[filaActual][columnaActual] = '.'; // Dejar vacía la posición actual
+            board[nuevaFila][nuevaColumna] = baldosa; // Mover la baldosa a la nueva posición
+            System.out.println("Baldosa reubicada a (" + nuevaFila + ", " + nuevaColumna + ")");
+            drawBoard(); // Redibujar el tablero
+        } 
+        else {
+            System.out.println("Posición inválida");
+        }
+    }
+    
 }

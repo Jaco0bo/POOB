@@ -41,6 +41,20 @@ public class Puzzle {
         frame.setVisible(true);
         
         tablero.drawBoard();
+        
+        //Eliminar una baldosa
+        System.out.println("Ingrese la posición de la baldosa a eliminar (fila columna):");
+        int filaEliminar = scanner.nextInt();
+        int columnaEliminar = scanner.nextInt();
+        tablero.eliminarBaldosa(filaEliminar, columnaEliminar);
+        
+        //Reubicar una baldosa
+        System.out.println("Ingrese la nueva posición para colocar la baldosa (fila columna):");
+        int nuevaFila = scanner.nextInt();
+        int nuevaColumna = scanner.nextInt();
+        tablero.reubicarBaldosa(filaEliminar, columnaEliminar, nuevaFila, nuevaColumna);
+
+        scanner.close();
 
         scanner.close();
     }
