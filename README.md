@@ -20,7 +20,7 @@ aplica sobre una baldosa hace que ésta y las baldosas vecinas se peguen.
 
 
 3. Andrés Sepúlveda: 25 horas
-   Camilo Fernandez:
+   Camilo Fernandez: 22 horas
 
 4. El mayor logro fue
 
