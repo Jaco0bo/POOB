@@ -166,4 +166,43 @@ public class Puzzle {
             System.out.println("El tablero no está inicializado.");
         }
     }
+    
+    public static void rotarDerecha() {
+        System.out.println("Rotando el tablero a la derecha...");
+        int h = board.length;
+        int w = board[0].length;
+        char[][] nuevoTablero = new char[w][h]; 
+    
+        // La última fila se convierte en la primera columna
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                nuevoTablero[j][h - 1 - i] = board[i][j];
+            }
+        }
+    
+        board = nuevoTablero;
+        tablero.setBoard(board);
+        tablero.changeSize(w * 30, h * 30); 
+        tablero.drawBoard(); 
+    }
+
+    public static void rotarIzquierda() {
+        System.out.println("Rotando el tablero a la izquierda...");
+        int h = board.length;
+        int w = board[0].length;
+        char[][] nuevoTablero = new char[w][h]; 
+    
+        //La primera columna se convierte en la última fila
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                nuevoTablero[w - 1 - j][i] = board[i][j];
+            }
+        }
+    
+        board = nuevoTablero;
+        tablero.setBoard(board); 
+        tablero.changeSize(w * 30, h * 30); 
+        tablero.drawBoard(); 
+    }
+
 }
