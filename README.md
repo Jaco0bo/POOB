@@ -28,9 +28,9 @@ seguiamos un orden logico que nos facilitaba la programacion y tambien el diseñ
 - Andrés Sepúlveda: 25 horas
 - Camilo Fernandez: 22 horas
 
-4. El mayor logro fue
+4. El mayor logro que tuvimos en nuestro proyecto fue el como se implemento el codigo gracias a pair programming y a la plataforma github ya que mientras uno iba subiendo lo que iba codificando el otro podia mirar y corregir el que estaba haciendo por lo tanto sentimos que fue un buen trabajo en ese aspecto y el aprendizaje que tuvimos mediante realizabamos el codigo fue vital para la entrega final-
 
-5. Nuestro mayor incoveniente fue
+5. Nuestro mayor incoveniente como grupo sentimos que fue la parte de diagramas de secuenias o metodos en astah y algun que otro detalle en el codigo debido a que nos blanqueamos en uno que otro tema y sentimos que apesar de todo lo supimos solucionar como un buen grupo pero sentimos que hay errores o puntos a mejorar que al pasar de los dias iremos mejorando
 
 6. Consideramos que trabajamos muy bien por medio de git con todo el tema que paso por el paro
    y eso nos hizo obtener unos mejores resultados a comparación de si hubieramos tranbajado cada uno
