@@ -177,7 +177,7 @@ public class Rectangle{
     /*
      * Erase the rectangle on screen.
      */
-    private void erase(){
+    public void erase(){
         if(isVisible) {
             Canvas canvas = Canvas.getCanvas();
             canvas.erase(this);

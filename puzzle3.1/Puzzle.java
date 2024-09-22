@@ -220,7 +220,4 @@ public class Puzzle {
         canvas.getCanvasPane().repaint(); // Forzar redibujado
     }
     
-    public void initPuzzle(){
-        generateBoards();
-    }
 }
