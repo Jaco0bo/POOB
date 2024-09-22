@@ -205,6 +205,19 @@ public class Rectangle{
         return width;
     }
     
+    public int getXPosition(){
+        return xPosition;
+    }
+    
+    public int getYPosition(){
+        return yPosition;
+    }
+    
+    public void setPosition(int x, int y){
+        this.xPosition = x;
+        this.yPosition = y;
+    }
+    
     public void setBoard(char[][] board){
         this.board = board;
     }
@@ -269,7 +282,7 @@ public class Rectangle{
     }
     
     public static Rectangle createGlueSquare(int glueSize, int xPosition, int yPosition, String color) {
-    return new Rectangle(glueSize, glueSize, xPosition, yPosition, color, true, false);
+        return new Rectangle(glueSize, glueSize, xPosition, yPosition, color, true, false);
     }
     
 }

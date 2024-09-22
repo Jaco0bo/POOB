@@ -9,32 +9,27 @@ import java.awt.geom.*;
  */
 
 public class Circle{
-
     public static final double PI=3.1416;
-    
     private int diameter;
     private int xPosition;
     private int yPosition;
     private String color;
     private boolean isVisible;
-    
+
 
     public Circle(){
-        diameter = 30;
+        diameter = 10;
         xPosition = 20;
         yPosition = 15;
-        color = "blue";
-        isVisible = false;
+        color = "black";
+        isVisible = true;
     }
-
-
        
     public void makeVisible(){
         isVisible = true;
         draw();
     }
     
-
     public void makeInvisible(){
         erase();
         isVisible = false;
@@ -43,6 +38,7 @@ public class Circle{
     private void draw(){
         if(isVisible) {
             Canvas canvas = Canvas.getCanvas();
+            // Dibujar el circulo sobre el tablero sin limpiar otros elementos
             canvas.draw(this, color, 
                 new Ellipse2D.Double(xPosition, yPosition, 
                 diameter, diameter));
@@ -50,10 +46,11 @@ public class Circle{
         }
     }
 
-    private void erase(){
+    public void erase(){
         if(isVisible) {
             Canvas canvas = Canvas.getCanvas();
             canvas.erase(this);
+            isVisible = false;
         }
     }
     
@@ -164,7 +161,20 @@ public class Circle{
         color = newColor;
         draw();
     }
-
-
-
+    
+    /**
+     * Metodo para crear hole de la clase puzzle
+     * @param int diameter, int xPosition, int yPosition, color
+        color = "blue";
+        isVisible = false;
+     */
+    public void createCircle(int diameter, int xPosition, int yPosition, String color) {
+        this.diameter = diameter;
+        this.xPosition = xPosition;
+        this.yPosition = yPosition;
+        this.color = color;
+        this.isVisible = true;
+        draw();  // Llamar al método draw() para dibujar el círculo
+    }
+    
 }

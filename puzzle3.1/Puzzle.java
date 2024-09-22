@@ -14,14 +14,15 @@ public class Puzzle {
     private char[][] startingBoard;
     private char[][] endingBoard;
     private Glue glue;
-    
+    private Hole hole;   
     public Puzzle(){
         this.startingBoard = startingBoard;
         this.endingBoard = endingBoard;
         this.startingTablero = new Rectangle(); // Inicializar si es necesario
         this.endingTablero = new Rectangle();   // Inicializar si es necesario
         generateBoards();
-        this.glue = new Glue(startingBoard, startingTablero);    // Inicializar el objeto Glue con el tablero inicial
+        this.glue = new Glue(startingBoard, startingTablero);// Inicializar el objeto Glue con el tablero inicial
+        this.hole = new Hole(startingBoard); // Inicializar el onejto Hole con el tablero inicial
     }
 
     private void generateBoards() {
@@ -220,4 +221,38 @@ public class Puzzle {
         canvas.getCanvasPane().repaint(); // Forzar redibujado
     }
     
+    public void exchange(){
+        // Intercambiar referencias de los tableros
+        Rectangle tempTablero = startingTablero; // Variable temporal
+        startingTablero = endingTablero;
+        endingTablero = tempTablero;
+        
+        // Intercambiar las posiciones de los tableros
+        int tempX = startingTablero.getXPosition();
+        int tempY = startingTablero.getYPosition();
+        startingTablero.setPosition(endingTablero.getXPosition(), endingTablero.getYPosition());
+        endingTablero.setPosition(tempX, tempY);
+        
+        // Intercambiar los contenidos de los tableros
+        char[][] tempBoard = startingBoard;
+        startingBoard = endingBoard;
+        endingBoard = tempBoard;
+        
+        
+        // Actualizar los tableros con los nuevos contenidos 
+        startingTablero.setBoard(startingBoard);
+        endingTablero.setBoard(endingBoard);
+        
+        // Redibujar los tableros
+        Canvas canvas = Canvas.getCanvas();
+        canvas.setVisible(true);
+        startingTablero.drawBoard();
+        endingTablero.drawBoard();
+        canvas.getCanvasPane().repaint(); // Forzar redibujado
+    }
+    
+    public void makeHole(int row, int column) {
+        hole.makeHole(row, column); // Llamar al metodo makeH
+    }
+
 }
