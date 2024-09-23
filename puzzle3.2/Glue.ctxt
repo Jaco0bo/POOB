@@ -1,0 +1,19 @@
+#BlueJ class context
+comment0.target=Glue
+comment0.text=\r\n\ Clase\ que\ permite\ simular\ el\ comportamiento\ de\ glue\ con\ las\ baldosas\ de\ puzzle.\r\n\ @author\ Camilo\ Fernandez\r\n\ @author\ Andr\u00E9s\ Sep\u00FAlveda\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=board\ tablero
+comment1.target=Glue(char[][],\ Rectangle)
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Glue\r\n
+comment2.params=filaAdj\ columnaAdj\ glueSize\ tileSize
+comment2.target=void\ drawGlue(int,\ int,\ int,\ int)
+comment2.text=\r\n\ Metodo\ de\ apoyo\ para\ adGlue\ que\ permite\ dibujar\ el\ pegante\ en\ las\ baldosas\ adyacentes\r\n
+comment3.params=fila\ columna
+comment3.target=void\ adGlue(int,\ int)
+comment4.params=filaAdj\ columnaAdj\ glueSize\ tileSize
+comment4.target=void\ removeGlue(int,\ int,\ int,\ int)
+comment4.text=\r\n\ Metodo\ de\ apoyo\ para\ borrar\ el\ glue\ de\ las\ baldosas\ adyacentes\r\n
+comment5.params=fila\ columna
+comment5.target=void\ adRemoveGlue(int,\ int)
+comment6.params=row\ col
+comment6.target=boolean\ isGlued(int,\ int)
+numComments=7
