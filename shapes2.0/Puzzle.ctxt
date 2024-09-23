@@ -1,6 +1,0 @@
-#BlueJ class context
-comment0.target=Puzzle
-comment0.text=\r\n\ Clase\ que\ permite\ simular\ una\ situacion\ inspirada\ en\ el\ "Problem\ F"\ de\ la\ maraton\r\n\ de\ programacion\ internacional\ 2023\ "Tilting\ Tiles"\r\n\ @author\:\ Camilo\ Fernandez\r\n\ @author\:\ Andr\u00E9s\ Sep\u00FAlveda\r\n\ @version\:\ 1.0\r\n
-comment1.params=args
-comment1.target=void\ main(java.lang.String[])
-numComments=2
