@@ -30,34 +30,41 @@ public class Puzzle {
         this.tilt = new Tilt(startingBoard, hole);  // Pasar el agujero a Tilt
     }
     
-    public Puzzle(int h, int w){
+    public Puzzle(int h, int w) {
         this.height = h;
         this.width = w;
         this.endingBoard = new char[height][width];
         this.startingBoard = new char[height][width]; // Inicializamos startingBoard vacío
-        this.startingTablero = new Rectangle(width * 30, height * 30, 10, 20, "brown", true, false);
-        this.endingTablero = new Rectangle(width * 30, height * 30, (width * 30) + 40, 20, "brown", true, false);
+        this.glue = new Glue(startingBoard, startingTablero);// Inicializar el objeto Glue con el tablero inicial
+        this.hole = new Hole(startingTablero); // Cambiado para inicializar con el tablero
+        this.tilt = new Tilt(startingBoard, hole);  // Pasar el agujero a Tilt
+        
+        // Ajustamos las posiciones para que los tableros no se superpongan
+        this.startingTablero = new Rectangle(width * 30, height * 30, 10, 20, "brown", true, false); // Tablero inicial
+        this.endingTablero = new Rectangle(width * 30, height * 30, (width * 30) + 40, 20, "brown", true, false); // Tablero final
+    
         initializeBoard(startingBoard); // Tablero inicial vacío
+    
         // Configurar los tableros en los objetos Rectangle
         startingTablero.setBoard(startingBoard);
         endingTablero.setBoard(endingBoard);
-
+    
         // Obtener la instancia de Canvas y configurar el tamaño del panel
         Canvas canvas = Canvas.getCanvas();
         canvas.setVisible(true);
-
+    
         // Configurar la ventana
         JFrame frame = new JFrame();
         frame.setSize((w * 30 * 2) + 80, h * 30 + 60); // Ajustar el tamaño de la ventana
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(canvas.getCanvasPane());
         frame.setVisible(true);
-
-        // Dibujar ambos tableros (inicial y final)
+    
+        // Dibujar solo el tablero inicial aquí
         startingTablero.drawBoard();
         endingTablero.drawBoard();
     }
-    
+
     private void initializeBoard(char[][] board) {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -65,7 +72,81 @@ public class Puzzle {
             }
         }
     }
+    
+    public Puzzle(char[][] endingBoard) {
+        // Llama al primer constructor con las dimensiones del tablero final
+        this(endingBoard.length, endingBoard[0].length);
+    
+        // Reemplaza el tablero final generado por el proporcionado
+        this.endingBoard = endingBoard;
+    
+        // Vuelve a configurar el tablero final en el objeto Rectangle
+        endingTablero.setBoard(endingBoard);
+
+        endingTablero.drawBoard(); // Solo dibuja el tablero final
+    }
+    
+    // Constructor 3: Recibe el tablero inicial y final
+    public Puzzle(char[][] startingBoard, char[][] endingBoard) {
+        // Llamamos al segundo constructor para inicializar el tablero final
+        this(endingBoard);
         
+        // Inicializamos el tablero inicial
+        this.startingBoard = startingBoard;
+    
+        // Inicializar el tablero inicial con las dimensiones y color base
+        this.startingTablero = new Rectangle(width * 30, height * 30, 10, 20, "brown", true, false);
+    
+        // Configura las baldosas en el tablero inicial según el array startingBoard
+        startingTablero.setBoard(startingBoard);
+    
+        // Dibujamos el tablero inicial
+        startingTablero.drawBoard();
+    
+        // Asegúrate de que no se dibuje más de una vez
+        Canvas canvas = Canvas.getCanvas();
+        canvas.wait(10);
+    }
+
+    // Inicializa el tablero final (endingBoard) con baldosas de colores
+    private void initializeEndingBoard(char[][] board) {
+        Canvas canvas = Canvas.getCanvas();
+    
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                // Configura el color basado en el valor de la matriz
+                switch (board[i][j]) {
+                    case 'r':
+                        canvas.setForegroundColor("red");
+                        break;
+                    case 'g':
+                        canvas.setForegroundColor("green");
+                        break;
+                    case 'b':
+                        canvas.setForegroundColor("blue");
+                        break;
+                    case 'y':
+                        canvas.setForegroundColor("yellow");
+                        break;
+                    case '.':
+                        canvas.setForegroundColor("brown"); // Baldosa vacía o base
+                        break;
+                    default:
+                        canvas.setForegroundColor("gray"); // Para caracteres no especificados
+                        break;
+                }
+                // Dibuja cada baldosa en el tablero final
+                canvas.drawRectangle(
+                    (width * 30) + j * 30, // Posición en x
+                    20 + i * 30,           // Posición en y
+                    28,                    // Ancho de la baldosa
+                    28                     // Altura de la baldosa
+                );
+            }
+        }
+        canvas.wait(10); // Opcional para un pequeño retraso en la visualización
+    }
+    
     private void generateBoards() {
         Scanner scanner = new Scanner(System.in);
 
