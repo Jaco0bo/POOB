@@ -232,6 +232,18 @@ public class Rectangle{
     public void drawBoard() {
         if (isVisible) {
             Canvas canvas = Canvas.getCanvas();
+            int tileSize = 25; // Tamaño de las celdas más pequeño
+            int spacing = 5; // Espacio entre las celdas
+            int margin = 2; // Distancia entre el borde del tablero y las baldosas
+            // Dibuja el fondo del tablero
+            canvas.setForegroundColor("brown"); // Color de fondo del tablero
+            canvas.drawRectangle(
+                xPosition - margin, 
+                yPosition - margin, 
+                (tileSize + spacing) * board[0].length + 2 * margin, // Ancho total del tablero
+                (tileSize + spacing) * board.length + 2 * margin // Alto total del tablero
+            );
+    
             for (int i = 0; i < board.length; i++) {
                 for (int j = 0; j < board[i].length; j++) {
                     // Configura el color basado en el valor en la matriz
@@ -254,12 +266,13 @@ public class Rectangle{
                         case '.':
                             canvas.setForegroundColor("brown");
                     }
-                    // Dibuja cada celda del tablero
+    
+                    // Dibuja cada celda del tablero con el nuevo tamaño y espaciado
                     canvas.drawRectangle(
-                        xPosition + j * 30, // Ajustar según el tamaño de las celdas
-                        yPosition + i * 30,
-                        30, // Tamaño de las celdas
-                        30
+                        xPosition + j * (tileSize + spacing) + margin, // Ajustar según el tamaño de las celdas y el espacio
+                        yPosition + i * (tileSize + spacing) + margin,
+                        tileSize, // Tamaño de las celdas
+                        tileSize
                     );
                 }
             }

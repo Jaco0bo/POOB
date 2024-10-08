@@ -9,6 +9,8 @@ import javax.swing.*;
  */
 
 public class Puzzle {
+    private int width;
+    private int height;
     private Rectangle startingTablero;
     private Rectangle endingTablero;
     private char[][] startingBoard;
@@ -27,7 +29,43 @@ public class Puzzle {
         this.hole = new Hole(startingTablero); // Cambiado para inicializar con el tablero
         this.tilt = new Tilt(startingBoard, hole);  // Pasar el agujero a Tilt
     }
+    
+    public Puzzle(int h, int w){
+        this.height = h;
+        this.width = w;
+        this.endingBoard = new char[height][width];
+        this.startingBoard = new char[height][width]; // Inicializamos startingBoard vacío
+        this.startingTablero = new Rectangle(width * 30, height * 30, 10, 20, "brown", true, false);
+        this.endingTablero = new Rectangle(width * 30, height * 30, (width * 30) + 40, 20, "brown", true, false);
+        initializeBoard(startingBoard); // Tablero inicial vacío
+        // Configurar los tableros en los objetos Rectangle
+        startingTablero.setBoard(startingBoard);
+        endingTablero.setBoard(endingBoard);
 
+        // Obtener la instancia de Canvas y configurar el tamaño del panel
+        Canvas canvas = Canvas.getCanvas();
+        canvas.setVisible(true);
+
+        // Configurar la ventana
+        JFrame frame = new JFrame();
+        frame.setSize((w * 30 * 2) + 80, h * 30 + 60); // Ajustar el tamaño de la ventana
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(canvas.getCanvasPane());
+        frame.setVisible(true);
+
+        // Dibujar ambos tableros (inicial y final)
+        startingTablero.drawBoard();
+        endingTablero.drawBoard();
+    }
+    
+    private void initializeBoard(char[][] board) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                board[i][j] = '.';
+            }
+        }
+    }
+        
     private void generateBoards() {
         Scanner scanner = new Scanner(System.in);
 
