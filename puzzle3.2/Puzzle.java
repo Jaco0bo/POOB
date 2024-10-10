@@ -99,6 +99,9 @@ public class Puzzle {
     
         // Configura las baldosas en el tablero inicial según el array startingBoard
         startingTablero.setBoard(startingBoard);
+        
+        // Inicializacion de glue
+        this.glue = new Glue(startingBoard, startingTablero);
     
         // Dibujamos el tablero inicial
         startingTablero.drawBoard();

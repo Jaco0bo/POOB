@@ -164,7 +164,7 @@ public class Rectangle{
      * Draw the rectangle with current specifications on screen.
      */
 
-    private void draw() {
+    public void draw() {
         if(isVisible) {
             Canvas canvas = Canvas.getCanvas();
             canvas.draw(this, color,
@@ -301,6 +301,7 @@ public class Rectangle{
     
     public void drawGlue() {
         if (isVisible) {
+            System.out.println("Dibujando glue en la posición: " + xPosition + ", " + yPosition);
             Canvas canvas = Canvas.getCanvas(); // Asegúrate de que sea el mismo Canvas
             // Dibuja el cuadrado de pegante encima de la baldosa
             canvas.setForegroundColor(color); // Cambia al color del pegante
