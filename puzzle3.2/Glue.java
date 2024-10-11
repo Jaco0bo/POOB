@@ -9,7 +9,8 @@ public class Glue{
     private Rectangle tablero;
     private char[][] board;
     private boolean[][] glueApplied; 
-    
+    private int glueSize = 10;  
+    private int tileSize = 30;   
     /**
      * Constructor for objects of class Glue
      */
@@ -34,26 +35,17 @@ public class Glue{
             return;
         }
     
-        // Verificar las casillas adyacentes y aplicar pegante solo si no están vacías
-        int glueSize = 10;  // Tamaño del pegante
-        int tileSize = 30;  // Tamaño de las baldosas
+        // Solo se aplica pegamento en la baldosa original si no está ya pegada
+        if (!isGlued(fila, columna)) {
+            drawGlue(fila, columna, glueSize, tileSize); // Dibuja el pegante
+            glueApplied[fila][columna] = true; // Marca como pegado
+        }
     
-        // Aplicar pegante en la baldosa original
-        drawGlue(fila, columna, glueSize, tileSize);
-    
-        // Aplicar pegante solo en las casillas adyacentes que no estén vacías
-        if (fila - 1 >= 0 && board[fila - 1][columna] != '.') {
-            drawGlue(fila - 1, columna, glueSize, tileSize); // Baldosa arriba
-        }
-        if (fila + 1 < board.length && board[fila + 1][columna] != '.') {
-            drawGlue(fila + 1, columna, glueSize, tileSize); // Baldosa abajo
-        }
-        if (columna - 1 >= 0 && board[fila][columna - 1] != '.') {
-            drawGlue(fila, columna - 1, glueSize, tileSize); // Baldosa a la izquierda
-        }
-        if (columna + 1 < board[0].length && board[fila][columna + 1] != '.') {
-            drawGlue(fila, columna + 1, glueSize, tileSize); // Baldosa a la derecha
-        }
+        // Aplicar pegamento solo a las baldosas adyacentes que no están pegadas
+        applyGlueIfNotGlued(fila - 1, columna); // Baldosa arriba
+        applyGlueIfNotGlued(fila + 1, columna); // Baldosa abajo
+        applyGlueIfNotGlued(fila, columna - 1); // Baldosa a la izquierda
+        applyGlueIfNotGlued(fila, columna + 1); // Baldosa a la derecha
     
         System.out.println("Pegante agregado en (" + fila + ", " + columna + ") y en las adyacentes que no están vacías.");
     
@@ -62,7 +54,17 @@ public class Glue{
         canvas.getCanvasPane().repaint();
     }
 
-    private void drawGlue(int filaAdj, int columnaAdj, int glueSize, int tileSize) {
+    private void applyGlueIfNotGlued(int row, int col) {
+        if (row >= 0 && row < board.length && col >= 0 && col < board[0].length) {
+            // Verifica que la casilla no esté vacía y que no tenga pegante
+            if (board[row][col] != '.' && !isGlued(row, col)) {
+                drawGlue(row, col, glueSize, tileSize); // Dibuja el pegante
+                glueApplied[row][col] = true; // Marca como pegado
+            }
+        }
+    }
+
+    public void drawGlue(int filaAdj, int columnaAdj, int glueSize, int tileSize) {
         if (filaAdj >= 0 && filaAdj < board.length && columnaAdj >= 0 && columnaAdj < board[0].length) {
             int xPositionGlue = 10 + columnaAdj * tileSize + (tileSize - glueSize) / 2;
             int yPositionGlue = 20 + filaAdj * tileSize + (tileSize - glueSize) / 2;
@@ -129,5 +131,15 @@ public class Glue{
     public boolean isGlued(int row, int col) {
         // Revisa si la baldosa en (row, col) está pegada a las adyacentes
         return glueApplied[row][col];
-    }  
+    }
+    
+    public int getGlueSize(){
+        return glueSize;
+    }
+    
+    public int getTileSize(){
+        return tileSize;
+    }
 }
+
+    

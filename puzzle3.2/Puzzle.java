@@ -1,4 +1,4 @@
-import java.util.Scanner;
+import java.util.*;
 import javax.swing.*;
 /**
  * Clase que permite simular una situacion inspirada en el "Problem F" de la maraton
@@ -61,8 +61,8 @@ public class Puzzle {
         frame.setVisible(true);
     
         // Dibujar solo el tablero inicial aquí
-        startingTablero.drawBoard();
-        endingTablero.drawBoard();
+        startingTablero.drawBoard(glue);
+        endingTablero.drawBoard(glue);
     }
 
     private void initializeBoard(char[][] board) {
@@ -83,7 +83,7 @@ public class Puzzle {
         // Vuelve a configurar el tablero final en el objeto Rectangle
         endingTablero.setBoard(endingBoard);
 
-        endingTablero.drawBoard(); // Solo dibuja el tablero final
+        endingTablero.drawBoard(glue); // Solo dibuja el tablero final
     }
     
     // Constructor 3: Recibe el tablero inicial y final
@@ -104,7 +104,7 @@ public class Puzzle {
         this.glue = new Glue(startingBoard, startingTablero);
     
         // Dibujamos el tablero inicial
-        startingTablero.drawBoard();
+        startingTablero.drawBoard(glue);
     
         // Asegúrate de que no se dibuje más de una vez
         Canvas canvas = Canvas.getCanvas();
@@ -203,25 +203,36 @@ public class Puzzle {
         frame.setVisible(true);
 
         // Dibujar ambos tableros (inicial y final)
-        startingTablero.drawBoard();
-        endingTablero.drawBoard();
+        startingTablero.drawBoard(glue);
+        endingTablero.drawBoard(glue);
 
         scanner.close();
     }    
     
     /** 
      * Elimina baldosas
-     * @param Escoge la fila de la baldosa que quiera ser borrada
-     * @param Escoge la columna de la baldosa que quiera ser borrada
+     * @param fila Escoge la fila de la baldosa que quiere ser borrada
+     * @param columna Escoge la columna de la baldosa que quiere ser borrada
      */
     public void eliminarBaldosa(int fila, int columna) {
         System.out.println("Intentando eliminar baldosa en (" + fila + ", " + columna + ")");
+        
+        // Verificar si la posición es válida
         if (fila >= 0 && fila < startingBoard.length && columna >= 0 && columna < startingBoard[0].length) {
+            // Verificar si la baldosa tiene pegante
+            if (glue.isGlued(fila, columna)) {
+                System.out.println("No se puede eliminar la baldosa en (" + fila + ", " + columna + ") porque tiene pegante.");
+                return; // Salir del método si la baldosa tiene pegante
+            }
+    
+            // Proceder a eliminar la baldosa
             startingBoard[fila][columna] = '.'; // Representar baldosa eliminada con un punto (o cualquier otro símbolo)
             startingTablero.setBoard(startingBoard); // Actualizar el tablero en el objeto Rectangle
             System.out.println("Baldosa eliminada en (" + fila + ", " + columna + ")");
-            startingTablero.drawBoard(); // Redibujar el tablero
-            
+    
+            // Redibujar el tablero
+            startingTablero.drawBoard(glue); 
+    
             Canvas canvas = Canvas.getCanvas(); // Obtener canvas
             canvas.getCanvasPane().repaint(); // Forzar redibujado
         } else {
@@ -229,81 +240,131 @@ public class Puzzle {
         }
     }
     
-       /** 
-     * Al elegir una baldosa la reubica en el lugar especificado de la matriz dada
-     * @param Escoge la fila de la baldosa actual
-     * @param Escoge la columna de la baldosa actual
-     * @param Escoge la fila de la baldosa a la cual se quiera reubicar
-     * @param Escoge la columna de la baldosa a la cual se quiera reubicar
-     */
     public void reubicarBaldosa(int filaActual, int columnaActual, int nuevaFila, int nuevaColumna) {
         System.out.println("Intentando reubicar baldosa desde (" + filaActual + ", " + columnaActual + ") a (" + nuevaFila + ", " + nuevaColumna + ")");
-            if (filaActual >= 0 && filaActual < startingBoard.length && columnaActual >= 0 && columnaActual < startingBoard[0].length
-                && nuevaFila >= 0 && nuevaFila < startingBoard.length && nuevaColumna >= 0 && nuevaColumna < startingBoard[0].length) {
-                char baldosa = startingBoard[filaActual][columnaActual];
-                if (baldosa != '.') { // Verificar que la baldosa no esté vacía
-                    startingBoard[filaActual][columnaActual] = '.'; // Dejar vacía la posición actual
-                    startingBoard[nuevaFila][nuevaColumna] = baldosa; // Mover la baldosa a la nueva posición
-                    startingTablero.setBoard(startingBoard); // Actualizar el tablero en el objeto Rectangle
-                    System.out.println("Baldosa reubicada a (" + nuevaFila + ", " + nuevaColumna + ")");
-                    startingTablero.drawBoard(); // Redibujar el tablero
-                    
-                    Canvas canvas = Canvas.getCanvas(); // Obtener Canvas
-                    canvas.getCanvasPane().repaint(); // Forzar redibujado
-                } else {
-                    System.out.println("No hay baldosa para mover en (" + filaActual + ", " + columnaActual + ")");
-                }
-            } else {
-                System.out.println("Posición inválida para reubicar");
-            }
-    }
     
+        // Verificar límites
+        if (filaActual >= 0 && filaActual < startingBoard.length && columnaActual >= 0 && columnaActual < startingBoard[0].length
+                && nuevaFila >= 0 && nuevaFila < startingBoard.length && nuevaColumna >= 0 && nuevaColumna < startingBoard[0].length) {
+    
+            char baldosa = startingBoard[filaActual][columnaActual];
+            if (baldosa != '.') { // Verificar que la baldosa no esté vacía
+                
+                // Almacenar las posiciones de los pegantes adyacentes
+                List<int[]> posicionesPegantes = new ArrayList<>();
+                agregarPegantesAdyacentes(filaActual, columnaActual, posicionesPegantes);
+    
+                // Eliminar pegantes de la posición original
+                glue.removeGlue(filaActual, columnaActual, glue.getGlueSize(), glue.getTileSize());
+    
+                // Eliminar pegantes de las posiciones adyacentes
+                for (int[] pos : posicionesPegantes) {
+                    glue.removeGlue(pos[0], pos[1], glue.getGlueSize(), glue.getTileSize());
+                }
+    
+                // Mover la baldosa a la nueva posición
+                startingBoard[filaActual][columnaActual] = '.'; // Dejar vacía la posición actual
+                startingBoard[nuevaFila][nuevaColumna] = baldosa; // Mover la baldosa a la nueva posición
+    
+                // Comprobar si la baldosa original tenía pegamento
+                if (!posicionesPegantes.isEmpty()) {
+                    // Si había pegamento, mover las baldosas adyacentes pegadas
+                    for (int[] pos : posicionesPegantes) {
+                        int peganteFila = pos[0];
+                        int peganteColumna = pos[1];
+    
+                        // Calcular nuevas posiciones para los pegantes
+                        int nuevaPosFila = nuevaFila + (peganteFila - filaActual);
+                        int nuevaPosColumna = nuevaColumna + (peganteColumna - columnaActual);
+    
+                        // Asegurarse de que la nueva posición esté dentro de los límites
+                        if (nuevaPosFila >= 0 && nuevaPosFila < startingBoard.length && 
+                            nuevaPosColumna >= 0 && nuevaPosColumna < startingBoard[0].length) {
+                            startingBoard[nuevaPosFila][nuevaPosColumna] = startingBoard[peganteFila][peganteColumna]; // Mover la baldosa pegante
+                            startingBoard[peganteFila][peganteColumna] = '.'; // Dejar vacía la posición original
+                            glue.adGlue(nuevaPosFila, nuevaPosColumna); // Agregar pegamento a la nueva posición
+                        }
+                    }
+    
+                    // También añadir pegante en la nueva posición de la baldosa original
+                    glue.adGlue(nuevaFila, nuevaColumna);
+                }
+    
+                // Actualizar el tablero en el objeto Rectangle
+                startingTablero.setBoard(startingBoard);
+                System.out.println("Baldosa reubicada a (" + nuevaFila + ", " + nuevaColumna + ")");
+    
+                // Redibujar el tablero
+                startingTablero.drawBoard(glue);
+                Canvas canvas = Canvas.getCanvas(); // Obtener Canvas
+                canvas.getCanvasPane().repaint(); // Forzar redibujado
+            } else {
+                System.out.println("No hay baldosa para mover en (" + filaActual + ", " + columnaActual + ")");
+            }
+        } else {
+            System.out.println("Posición inválida para reubicar");
+        }
+    }
+
     /**
-     * Agrega una baldosa en una posicion dada, no agrega vacios
-     * @param escoger el color con ''
-     * @param si es rojo poner la posicion en la cual se quiera poner y el color 'r'
-     * @param si es azul poner la posicion en la cual se quiera poner y el color 'b'
-     * @param si es amarillo poner la posicion en la cual se quiera poner y el color 'y'
-     * @param si es verde poner la posicion en la cual se quiera poner y el color 'g'
+     * Agrega las posiciones de los pegantes adyacentes a la lista.
+     * @param fila Escoge la fila de la baldosa actual
+     * @param columna Escoge la columna de la baldosa actual
+     * @param posicionesPegantes Lista donde se agregarán las posiciones de los pegantes
      */
+    private void agregarPegantesAdyacentes(int fila, int columna, List<int[]> posicionesPegantes) {
+        // Verificar arriba
+        if (fila - 1 >= 0 && glue.isGlued(fila - 1, columna)) { // Arriba
+            posicionesPegantes.add(new int[]{fila - 1, columna});
+        }
+        // Verificar abajo
+        if (fila + 1 < startingBoard.length && glue.isGlued(fila + 1, columna)) { // Abajo
+            posicionesPegantes.add(new int[]{fila + 1, columna});
+        }
+        // Verificar izquierda
+        if (columna - 1 >= 0 && glue.isGlued(fila, columna - 1)) { // Izquierda
+            posicionesPegantes.add(new int[]{fila, columna - 1});
+        }
+        // Verificar derecha
+        if (columna + 1 < startingBoard[0].length && glue.isGlued(fila, columna + 1)) { // Derecha
+            posicionesPegantes.add(new int[]{fila, columna + 1});
+        }
+    }
+
     public void agregarBaldosa(int fila, int columna, char color) {
         System.out.println("Intentando agregar baldosa en (" + fila + ", " + columna + ") con color '" + color + "'");
         if (fila >= 0 && fila < startingBoard.length && columna >= 0 && columna < startingBoard[0].length) {
             switch (color) {
                 case 'r':
-                     startingBoard[fila][columna] = color; // Agregar la baldosa con el color dado
-                     startingTablero.setBoard(startingBoard); // Actualizar el tablero en el objeto Rectangle
-                     System.out.println("Baldosa agregada en (" + fila + ", " + columna + ") con color '" + color + "'");
-                     startingTablero.drawBoard(); // Redibujar el tablero
-                     break;
                 case 'g':
-                     startingBoard[fila][columna] = color; 
-                     startingTablero.setBoard(startingBoard); 
-                     System.out.println("Baldosa agregada en (" + fila + ", " + columna + ") con color '" + color + "'");
-                     startingTablero.drawBoard(); 
-                     break;
                 case 'b':
-                     startingBoard[fila][columna] = color; 
-                     startingTablero.setBoard(startingBoard); 
-                     System.out.println("Baldosa agregada en (" + fila + ", " + columna + ") con color '" + color + "'");
-                     startingTablero.drawBoard(); 
-                     break;
                 case 'y':
-                     startingBoard[fila][columna] = color; 
-                     startingTablero.setBoard(startingBoard); 
-                     System.out.println("Baldosa agregada en (" + fila + ", " + columna + ") con color '" + color + "'");
-                     startingTablero.drawBoard(); 
-                     break;
-            default:
-                System.out.println("Color inválido. Use 'r' para rojo, 'g' para verde, 'b' para azul, 'y' para amarillo.");
-                break;
+                    startingBoard[fila][columna] = color; // Agregar la baldosa con el color dado
+                    startingTablero.setBoard(startingBoard); // Actualizar el tablero en el objeto Rectangle
+                    System.out.println("Baldosa agregada en (" + fila + ", " + columna + ") con color '" + color + "'");
+                    
+                    // Redibujar el tablero
+                    startingTablero.drawBoard(glue); 
+    
+                    // Redibujar el pegamento en las posiciones donde fue aplicado previamente
+                    for (int i = 0; i < startingBoard.length; i++) {
+                        for (int j = 0; j < startingBoard[0].length; j++) {
+                            if (glue.isGlued(i, j)) { // Verificar si hay pegamento en la posición
+                                glue.drawGlue(i, j, glue.getGlueSize(), glue.getTileSize()); // Solo dibujar el pegamento existente
+                            }
+                        }
+                    }
+    
+                    Canvas canvas = Canvas.getCanvas(); // Obtener Canvas
+                    canvas.getCanvasPane().repaint(); // Forzar redibujado
+                    break;
+                default:
+                    System.out.println("Color inválido. Use 'r' para rojo, 'g' para verde, 'b' para azul, 'y' para amarillo.");
+                    break;
             }
-        Canvas canvas = Canvas.getCanvas(); // Obtener Canvas
-        canvas.getCanvasPane().repaint(); // Forzar redibujado
-        } 
-        else {
-        System.out.println("Posición inválida para agregar baldosa");
-       }
+        } else {
+            System.out.println("Posición inválida para agregar baldosa");
+        }
     }
     
     /**
@@ -311,8 +372,8 @@ public class Puzzle {
      */
     public void makeVisibleTable() {
         if (startingTablero != null && endingTablero != null) {
-            startingTablero.makeVisibleTable();
-            endingTablero.makeVisibleTable();
+            startingTablero.makeVisibleTable(glue);
+            endingTablero.makeVisibleTable(glue);
             Canvas canvas = Canvas.getCanvas(); // Obtener Canvas
             canvas.getCanvasPane().repaint(); // Forzar redibujado
             System.out.println("Los tableros ahora son visibles.");
@@ -371,15 +432,15 @@ public class Puzzle {
         // Redibujar los tableros
         Canvas canvas = Canvas.getCanvas();
         canvas.setVisible(true);
-        startingTablero.drawBoard();
-        endingTablero.drawBoard();
+        startingTablero.drawBoard(glue);
+        endingTablero.drawBoard(glue);
         canvas.getCanvasPane().repaint(); // Forzar redibujado
     }
     
     public void makeHole(int row, int column) {
         hole.makeHole(row, column);  // Crear el agujero
         startingTablero.setBoard(startingBoard); // Actualizar el tablero en el objeto Rectangle
-        startingTablero.drawBoard(); // Redibujar el tablero completo
+        startingTablero.drawBoard(glue); // Redibujar el tablero completo
         hole.drawHole(); // Dibujar el agujero
         Canvas canvas = Canvas.getCanvas(); // Obtener Canvas
         canvas.getCanvasPane().repaint(); // Forzar redibujado
@@ -392,7 +453,7 @@ public class Puzzle {
     public void tiltBoard(String direction) {
         tilt.tilt(direction); 
         startingTablero.setBoard(startingBoard); // Actualizar el tablero
-        startingTablero.drawBoard(); // Redibujar el tablero
+        startingTablero.drawBoard(glue); // Redibujar el tablero
         Canvas canvas = Canvas.getCanvas(); 
         canvas.getCanvasPane().repaint(); // Forzar redibujado
     }

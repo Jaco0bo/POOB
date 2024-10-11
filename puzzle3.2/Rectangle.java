@@ -229,7 +229,7 @@ public class Rectangle{
         this.board = newBoard;
     }
     
-    public void drawBoard() {
+    public void drawBoard(Glue glue) {
         if (isVisible) {
             Canvas canvas = Canvas.getCanvas();
             int tileSize = 25; // Tamaño de las celdas más pequeño
@@ -265,6 +265,7 @@ public class Rectangle{
                             break;
                         case '.':
                             canvas.setForegroundColor("brown");
+                            break;
                     }
     
                     // Dibuja cada celda del tablero con el nuevo tamaño y espaciado
@@ -274,16 +275,27 @@ public class Rectangle{
                         tileSize, // Tamaño de las celdas
                         tileSize
                     );
+    
+                    // Verifica si hay pegamento aplicado en esta celda y redibuja el pegamento
+                    if (glue.isGlued(i, j)) {
+                        // Dibuja el pegamento
+                        int glueSize = 10;  // Tamaño del pegamento
+                        int xPositionGlue = xPosition + j * (tileSize + spacing) + margin + (tileSize - glueSize) / 2;
+                        int yPositionGlue = yPosition + i * (tileSize + spacing) + margin + (tileSize - glueSize) / 2;
+                        canvas.setForegroundColor("magenta"); // Color del pegamento
+                        canvas.drawRectangle(xPositionGlue, yPositionGlue, glueSize, glueSize); // Dibuja el pegamento
+                    }
                 }
             }
             canvas.wait(10); // Opcional: espera un momento para la visualización    
         }
     }
+
     
-    public void makeVisibleTable(){
+    public void makeVisibleTable(Glue glue){
         if (!isVisible) {
             isVisible = true;
-            drawBoard(); // Dibuja el tablero y las baldosas cuando se hace visible
+            drawBoard(glue); // Dibuja el tablero y las baldosas cuando se hace visible
         }
     }
 

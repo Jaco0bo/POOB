@@ -10,6 +10,7 @@ public class Hole {
     private Rectangle boardRectangle; // Cambiado a Rectangle
     private int holeRow;
     private int holeColumn;
+    private Glue glue;
 
     public Hole(Rectangle boardRectangle) { // Cambiar parámetro a Rectangle
         this.boardRectangle = boardRectangle;
@@ -25,7 +26,7 @@ public class Hole {
                 // Cambia el valor en el tablero a un símbolo que represente un agujero
                 currentBoard[row][column] = 'O'; // O por hole
                 boardRectangle.setBoard(currentBoard); // Actualiza el tablero
-                boardRectangle.drawBoard(); // Redibuja el tablero
+                boardRectangle.drawBoard(glue); // Redibuja el tablero
                 holeRow = row; // Actualiza la posición del agujero
                 holeColumn = column;
                 drawHole(); // Dibuja el agujero
@@ -49,7 +50,7 @@ public class Hole {
     public void removeTileIfInHole(int row, int column) {
         if (isHole(row, column)) {
             boardRectangle.getBoard()[row][column] = '.';  // La ficha desaparece
-            boardRectangle.drawBoard(); // Redibuja el tablero después de eliminar
+            boardRectangle.drawBoard(glue); // Redibuja el tablero después de eliminar
         }
     }
 }
