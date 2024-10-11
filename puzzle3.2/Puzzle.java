@@ -23,8 +23,7 @@ public class Puzzle {
         this.startingBoard = startingBoard;
         this.endingBoard = endingBoard;
         this.startingTablero = new Rectangle(); // Inicializar si es necesario
-        this.endingTablero = new Rectangle();   // Inicializar si es necesario
-        generateBoards();
+        this.endingTablero = new Rectangle();   // Inicializar si es necesario  
         this.glue = new Glue(startingBoard, startingTablero);// Inicializar el objeto Glue con el tablero inicial
         this.hole = new Hole(startingTablero); // Cambiado para inicializar con el tablero
         this.tilt = new Tilt(startingBoard, hole);  // Pasar el agujero a Tilt
@@ -148,65 +147,6 @@ public class Puzzle {
             }
         }
         canvas.wait(10); // Opcional para un pequeño retraso en la visualización
-    }
-    
-    private void generateBoards() {
-        Scanner scanner = new Scanner(System.in);
-
-        // Leer dimensiones del tablero
-        System.out.println("Ingrese las dimensiones del tablero (h w): ");
-        int h = scanner.nextInt();
-        int w = scanner.nextInt();
-        scanner.nextLine(); // Consumir el salto de línea
-
-        // Crear los tableros inicial y final con las dimensiones especificadas
-        startingTablero = new Rectangle(w * 30, h * 30, 10, 20, "brown", true, false);
-        endingTablero = new Rectangle(w * 30, h * 30, (w * 30) + 40, 20, "blue", true, false); 
-
-        // Leer el estado inicial del tablero
-        startingBoard = new char[h][w];
-        System.out.println("Ingrese la configuración inicial del tablero: ");
-        for (int i = 0; i < h; i++) {
-            String line = scanner.nextLine();
-            if (line.length() != w) {
-                System.out.println("Error: La línea ingresada tiene una longitud incorrecta.");
-                return;
-            }
-            startingBoard[i] = line.toCharArray();
-        }
-
-        // Leer el estado final del tablero
-        endingBoard = new char[h][w];
-        System.out.println("Ingrese la configuración final del tablero: ");
-        for (int i = 0; i < h; i++) {
-            String line = scanner.nextLine();
-            if (line.length() != w) {
-                System.out.println("Error: La línea ingresada tiene una longitud incorrecta.");
-                return;
-            }
-            endingBoard[i] = line.toCharArray();
-        }
-
-        // Configurar los tableros en los objetos Rectangle
-        startingTablero.setBoard(startingBoard);
-        endingTablero.setBoard(endingBoard);
-
-        // Obtener la instancia de Canvas y configurar el tamaño del panel
-        Canvas canvas = Canvas.getCanvas();
-        canvas.setVisible(true);
-
-        // Configurar la ventana
-        JFrame frame = new JFrame();
-        frame.setSize((w * 30 * 2) + 80, h * 30 + 60); // Ajustar el tamaño de la ventana
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(canvas.getCanvasPane());
-        frame.setVisible(true);
-
-        // Dibujar ambos tableros (inicial y final)
-        startingTablero.drawBoard(glue);
-        endingTablero.drawBoard(glue);
-
-        scanner.close();
     }    
     
     /** 
@@ -254,10 +194,8 @@ public class Puzzle {
                 List<int[]> posicionesPegantes = new ArrayList<>();
                 agregarPegantesAdyacentes(filaActual, columnaActual, posicionesPegantes);
     
-                // Eliminar pegantes de la posición original
+                // **NUEVO**: Eliminar pegante de la posición original y de adyacentes
                 glue.removeGlue(filaActual, columnaActual, glue.getGlueSize(), glue.getTileSize());
-    
-                // Eliminar pegantes de las posiciones adyacentes
                 for (int[] pos : posicionesPegantes) {
                     glue.removeGlue(pos[0], pos[1], glue.getGlueSize(), glue.getTileSize());
                 }
@@ -266,9 +204,8 @@ public class Puzzle {
                 startingBoard[filaActual][columnaActual] = '.'; // Dejar vacía la posición actual
                 startingBoard[nuevaFila][nuevaColumna] = baldosa; // Mover la baldosa a la nueva posición
     
-                // Comprobar si la baldosa original tenía pegamento
+                // Mover pegamentos, sin crear nuevos
                 if (!posicionesPegantes.isEmpty()) {
-                    // Si había pegamento, mover las baldosas adyacentes pegadas
                     for (int[] pos : posicionesPegantes) {
                         int peganteFila = pos[0];
                         int peganteColumna = pos[1];
@@ -280,14 +217,18 @@ public class Puzzle {
                         // Asegurarse de que la nueva posición esté dentro de los límites
                         if (nuevaPosFila >= 0 && nuevaPosFila < startingBoard.length && 
                             nuevaPosColumna >= 0 && nuevaPosColumna < startingBoard[0].length) {
-                            startingBoard[nuevaPosFila][nuevaPosColumna] = startingBoard[peganteFila][peganteColumna]; // Mover la baldosa pegante
-                            startingBoard[peganteFila][peganteColumna] = '.'; // Dejar vacía la posición original
-                            glue.adGlue(nuevaPosFila, nuevaPosColumna); // Agregar pegamento a la nueva posición
+                            
+                            // Mover baldosa pegada y mantener su color original
+                            startingBoard[nuevaPosFila][nuevaPosColumna] = startingBoard[peganteFila][peganteColumna];
+                            startingBoard[peganteFila][peganteColumna] = '.'; // Vaciar la posición original
+                            
+                            // Volver a agregar el pegante en las nuevas posiciones sin afectar adyacentes
+                            glue.addGlueWithoutAdjacent(nuevaPosFila, nuevaPosColumna);
                         }
                     }
     
                     // También añadir pegante en la nueva posición de la baldosa original
-                    glue.adGlue(nuevaFila, nuevaColumna);
+                    glue.addGlueWithoutAdjacent(nuevaFila, nuevaColumna);
                 }
     
                 // Actualizar el tablero en el objeto Rectangle
@@ -446,16 +387,21 @@ public class Puzzle {
         canvas.getCanvasPane().repaint(); // Forzar redibujado
     }
 
-    
-    /**
-     * 
-     */
     public void tiltBoard(String direction) {
-        tilt.tilt(direction); 
-        startingTablero.setBoard(startingBoard); // Actualizar el tablero
-        startingTablero.drawBoard(glue); // Redibujar el tablero
-        Canvas canvas = Canvas.getCanvas(); 
-        canvas.getCanvasPane().repaint(); // Forzar redibujado
+        tilt.setBoard(startingBoard);
+        // Inclina el tablero y actualiza el tablero inicial
+        tilt.tilt(direction);
+        startingTablero.setBoard(startingBoard);
+    
+        // Dibuja de nuevo todas las baldosas
+        startingTablero.drawBoard(glue); // <- Este paso redibuja el tablero
+    
+        // Forzar repintado del canvas para reflejar los cambios
+        Canvas canvas = Canvas.getCanvas();
+        canvas.getCanvasPane().repaint(); // <- Esto debe forzar el redibujado
+        canvas.wait(10);
+        System.out.println("Tablero inclinado hacia " + direction);
+        System.out.println(Arrays.deepToString(startingBoard));
     }
 
     /**

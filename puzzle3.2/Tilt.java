@@ -10,11 +10,10 @@
  */
 public class Tilt {
     private char[][] board; // Referencia al tablero principal
-    private Hole hole; // Referencia al agujero
+
     
     public Tilt(char[][] board, Hole hole){
         this.board = board; // Usar el tablero principal
-        this.hole = hole;  // Pasar la referencia del agujero
     }
     
     public void tilt(String direction) {
@@ -35,15 +34,11 @@ public class Tilt {
                 System.out.println("Dirección inválida. Use 'arriba', 'abajo', 'izquierda' o 'derecha'.");
             
         }
-        for (int row = 0; row < board.length; row++) {
-            for (int col = 0; col < board[0].length; col++) {
-                hole.removeTileIfInHole(row, col);  // Eliminar fichas que caen en el agujero
-            }
-        }
     }
 
     // Método para inclinar hacia arriba
     private void tiltUp() {
+        System.out.println("Inclinando hacia arriba");
         for (int col = 0; col < board[0].length; col++) {
             int writeIndex = 0;
             for (int row = 0; row < board.length; row++) {
@@ -60,6 +55,7 @@ public class Tilt {
 
     // Método para inclinar hacia abajo
     private void tiltDown() {
+        System.out.println("Inclinando hacia abajo");
         for (int col = 0; col < board[0].length; col++) {
             int writeIndex = board.length - 1;
             for (int row = board.length - 1; row >= 0; row--) {
@@ -76,6 +72,7 @@ public class Tilt {
 
     // Método para inclinar hacia la izquierda
     private void tiltLeft() {
+        System.out.println("Inclinando hacia la izquierda");
         for (int row = 0; row < board.length; row++) {
             int writeIndex = 0;
             for (int col = 0; col < board[0].length; col++) {
@@ -92,6 +89,7 @@ public class Tilt {
 
     // Método para inclinar hacia la derecha
     private void tiltRight() {
+        System.out.println("Inclinando hacia la derecha");
         for (int row = 0; row < board.length; row++) {
             int writeIndex = board[0].length - 1;
             for (int col = board[0].length - 1; col >= 0; col--) {
@@ -104,5 +102,9 @@ public class Tilt {
                 }
             }
         }
+    }
+    
+    public void setBoard(char[][] board) {
+        this.board = board;
     }
 }

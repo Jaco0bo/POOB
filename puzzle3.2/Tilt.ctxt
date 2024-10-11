@@ -13,4 +13,6 @@ comment5.params=
 comment5.target=void\ tiltLeft()
 comment6.params=
 comment6.target=void\ tiltRight()
-numComments=7
+comment7.params=board
+comment7.target=void\ setBoard(char[][])
+numComments=8

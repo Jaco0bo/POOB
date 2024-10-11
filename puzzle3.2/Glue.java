@@ -140,6 +140,34 @@ public class Glue{
     public int getTileSize(){
         return tileSize;
     }
+    
+    public void addGlueWithoutAdjacent(int fila, int columna) {
+        System.out.println("Intentando agregar pegante en (" + fila + ", " + columna + ") sin adyacentes");
+        
+        // Verificar que el tablero y el canvas no sean nulos
+        if (tablero == null || board == null || board.length == 0 || board[0].length == 0) {
+            System.out.println("Error: El tablero no ha sido inicializado correctamente.");
+            return;
+        }
+    
+        // Verificar si la casilla donde se quiere aplicar pegante no está vacía
+        if (board[fila][columna] == '.') {
+            System.out.println("No se puede agregar pegante en una casilla vacía.");
+            return;
+        }
+    
+        // Solo se aplica pegamento en la baldosa original si no está ya pegada
+        if (!isGlued(fila, columna)) {
+            drawGlue(fila, columna, glueSize, tileSize); // Dibuja el pegante
+            glueApplied[fila][columna] = true; // Marca como pegado
+        }
+    
+        System.out.println("Pegante agregado en (" + fila + ", " + columna + ") sin afectar adyacentes.");
+    
+        // Forzar el redibujado del canvas
+        Canvas canvas = Canvas.getCanvas();
+        canvas.getCanvasPane().repaint();
+    }
 }
 
     
