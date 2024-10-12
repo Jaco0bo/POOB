@@ -17,7 +17,8 @@ public class Puzzle {
     private char[][] endingBoard;
     private Glue glue;
     private Tilt tilt;
-    private Hole hole;   
+    private Hole hole;
+    private boolean tableVisible = false;
     
     public Puzzle(){
         this.startingBoard = startingBoard;
@@ -26,7 +27,7 @@ public class Puzzle {
         this.endingTablero = new Rectangle();   // Inicializar si es necesario  
         this.glue = new Glue(startingBoard, startingTablero);// Inicializar el objeto Glue con el tablero inicial
         this.hole = new Hole(startingTablero); // Cambiado para inicializar con el tablero
-        this.tilt = new Tilt(startingBoard, hole);  // Pasar el agujero a Tilt
+        this.tilt = new Tilt(startingBoard, glue);  // Pasar el agujero a Tilt
     }
     
     public Puzzle(int h, int w) {
@@ -36,7 +37,7 @@ public class Puzzle {
         this.startingBoard = new char[height][width]; // Inicializamos startingBoard vacío
         this.glue = new Glue(startingBoard, startingTablero);// Inicializar el objeto Glue con el tablero inicial
         this.hole = new Hole(startingTablero); // Cambiado para inicializar con el tablero
-        this.tilt = new Tilt(startingBoard, hole);  // Pasar el agujero a Tilt
+        this.tilt = new Tilt(startingBoard, glue);  // Pasar el agujero a Tilt
         
         // Ajustamos las posiciones para que los tableros no se superpongan
         this.startingTablero = new Rectangle(width * 30, height * 30, 10, 20, "brown", true, false); // Tablero inicial
@@ -317,6 +318,7 @@ public class Puzzle {
             endingTablero.makeVisibleTable(glue);
             Canvas canvas = Canvas.getCanvas(); // Obtener Canvas
             canvas.getCanvasPane().repaint(); // Forzar redibujado
+            tableVisible = true; // Tablero visible
             System.out.println("Los tableros ahora son visibles.");
         } else {
             System.out.println("Los tableros no estan inicializados.");
@@ -330,6 +332,7 @@ public class Puzzle {
         if (startingTablero != null && endingTablero != null) {
             startingTablero.makeInvisibleTable();
             endingTablero.makeInvisibleTable();
+            tableVisible = false; // Tablero invisible;
             System.out.println("Los tableros ahora son invisibles.");
         } else {
             System.out.println("Los tableros no estan inicializados.");
@@ -388,21 +391,85 @@ public class Puzzle {
     }
 
     public void tiltBoard(String direction) {
+        // Establecer el tablero actual en el objeto Tilt
         tilt.setBoard(startingBoard);
-        // Inclina el tablero y actualiza el tablero inicial
+        
+        // Crear una copia del estado actual del pegamento para comparaciones posteriores
+        boolean[][] originalGlue = glue.getGlueState();
+    
+        // Inclinar el tablero y mover las baldosas
         tilt.tilt(direction);
+    
+        // Crear una nueva matriz temporal para los pegamentos movidos
+        boolean[][] newGlueApplied = new boolean[startingBoard.length][startingBoard[0].length];
+    
+        // Recorrer el tablero para mover el pegamento junto con las baldosas
+        for (int fila = 0; fila < startingBoard.length; fila++) {
+            for (int columna = 0; columna < startingBoard[0].length; columna++) {
+                if (startingBoard[fila][columna] != '.') { // Si hay una baldosa en la posición actual
+                    
+                    // Si hay pegamento en la posición original
+                    if (originalGlue[fila][columna]) {
+                        int nuevaFila = fila;
+                        int nuevaColumna = columna;
+    
+                        // Dependiendo de la dirección, calcular la nueva posición
+                        switch (direction.toLowerCase()) {
+                            case "arriba":
+                                nuevaFila = tilt.getNewRow(fila, columna, "arriba");
+                                break;
+                            case "abajo":
+                                nuevaFila = tilt.getNewRow(fila, columna, "abajo");
+                                break;
+                            case "izquierda":
+                                nuevaColumna = tilt.getNewCol(fila, columna, "izquierda");
+                                break;
+                            case "derecha":
+                                nuevaColumna = tilt.getNewCol(fila, columna, "derecha");
+                                break;
+                        }
+    
+                        // Si la baldosa no se mueve porque otra la bloquea
+                        if (startingBoard[nuevaFila][nuevaColumna] != '.' && nuevaFila != fila && nuevaColumna != columna) {
+                            // Mantener el pegamento en su posición original
+                            newGlueApplied[fila][columna] = true;
+                        } else {
+                            // Mover el pegamento de la posición original a la nueva
+                            newGlueApplied[nuevaFila][nuevaColumna] = true;
+                        }
+                    }
+                }
+            }
+        }
+    
+        // Manejar casos donde dos baldosas con pegamento se mueven a la misma posición
+        for (int fila = 0; fila < newGlueApplied.length; fila++) {
+            for (int columna = 0; columna < newGlueApplied[0].length; columna++) {
+                if (newGlueApplied[fila][columna]) {
+                    // Si la baldosa en esta posición tenía pegamento antes y otra baldosa se movió aquí
+                    if (originalGlue[fila][columna]) {
+                        newGlueApplied[fila][columna] = true; // Mantener el pegamento
+                    }
+                }
+            }
+        }
+    
+        // Actualizar el estado de glueApplied con los nuevos movimientos
+        glue.updateGlueState(newGlueApplied);
+    
+        // Redibujar el tablero y los pegamentos
         startingTablero.setBoard(startingBoard);
+        startingTablero.drawBoard(glue);
     
-        // Dibuja de nuevo todas las baldosas
-        startingTablero.drawBoard(glue); // <- Este paso redibuja el tablero
-    
-        // Forzar repintado del canvas para reflejar los cambios
+        // Forzar el repintado del canvas para reflejar los cambios
         Canvas canvas = Canvas.getCanvas();
-        canvas.getCanvasPane().repaint(); // <- Esto debe forzar el redibujado
+        canvas.getCanvasPane().repaint(); 
         canvas.wait(10);
+    
         System.out.println("Tablero inclinado hacia " + direction);
         System.out.println(Arrays.deepToString(startingBoard));
     }
+
 
     /**
      * Finish the game and close the program
@@ -411,5 +478,49 @@ public class Puzzle {
         System.out.println("Finalizando el juego...");
         System.exit(0); 
     }
+    
+     // Método para obtener el número de baldosas que están mal colocadas
+    public int misplacedTiles() {
+        int count = 0;
+
+        for (int i = 0; i < startingBoard.length; i++) {
+            for (int j = 0; j < startingBoard[i].length; j++) {
+                // Contar las baldosas que no coinciden con el tablero final
+                if (startingBoard[i][j] != '.' && startingBoard[i][j] != endingBoard[i][j]) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+    
+    // Método para obtener las baldosas que no se pueden mover
+    public int[][] fixedTiles() {
+        List<int[]> fixedTilesList = new ArrayList<>();
+        Canvas canvas = Canvas.getCanvas();
+
+        for (int i = 0; i < startingBoard.length; i++) {
+            for (int j = 0; j < startingBoard[i].length; j++) {
+                if (startingBoard[i][j] != '.' && !tilt.canMoveTile(i, j)) {
+                    fixedTilesList.add(new int[]{i, j});
+
+                    // Hacer que la baldosa parpadee si el tablero está visible
+                    if (tableVisible) {
+                        for (int k = 0; k < 3; k++) {
+                            canvas.setForegroundColor("white");
+                            canvas.drawRectangle(10 + j * 30, 20 + i * 30, 28, 28);
+                            canvas.wait(200);
+                            canvas.setForegroundColor("brown");  // Color base de la baldosa
+                            canvas.drawRectangle(10 + j * 30, 20 + i * 30, 28, 28);
+                            canvas.wait(200);
+                        }
+                    }
+                }
+            }
+        }
+
+        return fixedTilesList.toArray(new int[fixedTilesList.size()][]);
+    }
+    
 }
 

@@ -8,7 +8,8 @@
 public class Glue{
     private Rectangle tablero;
     private char[][] board;
-    private boolean[][] glueApplied; 
+    private boolean[][] glueApplied;
+    private boolean[][] newGlueApplied;
     private int glueSize = 10;  
     private int tileSize = 30;   
     /**
@@ -168,6 +169,24 @@ public class Glue{
         Canvas canvas = Canvas.getCanvas();
         canvas.getCanvasPane().repaint();
     }
+    
+    // Método para mover el pegamento de una posición a otra
+    public void moveGlue(int fromRow, int fromCol, int toRow, int toCol) {
+        if (glueApplied[fromRow][fromCol]) {
+            glueApplied[toRow][toCol] = true;  // Mover pegamento a la nueva posición
+            glueApplied[fromRow][fromCol] = false; // Quitar pegamento de la posición anterior
+        }
+    }
+    
+    public void updateGlueState(boolean[][] newGlueApplied) {
+    this.glueApplied = newGlueApplied;
+    }
+    
+       public boolean [][] getGlueState() {
+        // Revisa si la baldosa en (row, col) está pegada a las adyacentes
+        return glueApplied;
+    }
+
 }
 
     

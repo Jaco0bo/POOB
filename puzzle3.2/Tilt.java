@@ -10,10 +10,11 @@
  */
 public class Tilt {
     private char[][] board; // Referencia al tablero principal
-
+    private Glue glue;
     
-    public Tilt(char[][] board, Hole hole){
+    public Tilt(char[][] board, Glue glue){
         this.board = board; // Usar el tablero principal
+        this.glue = glue; 
     }
     
     public void tilt(String direction) {
@@ -44,6 +45,8 @@ public class Tilt {
             for (int row = 0; row < board.length; row++) {
                 if (board[row][col] != '.') {
                     board[writeIndex][col] = board[row][col];
+                    glue.moveGlue(row, col, writeIndex, col);
+                    
                     if (writeIndex != row) {
                         board[row][col] = '.';
                     }
@@ -107,4 +110,52 @@ public class Tilt {
     public void setBoard(char[][] board) {
         this.board = board;
     }
+    
+    public int getNewRow(int fila, int columna, String direction) {
+        switch (direction) {
+            case "arriba":
+                return Math.max(0, fila - 1);
+            case "abajo":
+                return Math.min(board.length - 1, fila + 1);
+            default:
+                return fila;
+        }
+    }
+
+    public int getNewCol(int fila, int columna, String direction) {
+        switch (direction) {
+            case "izquierda":
+                return Math.max(0, columna - 1);
+            case "derecha":
+                return Math.min(board[0].length - 1, columna + 1);
+            default:
+                return columna;
+        }
+    }
+    
+    // Método para determinar si una baldosa puede moverse
+    public boolean canMoveTile(int row, int col) {
+        // Verifica si la baldosa no es un espacio vacío
+        if (board[row][col] == '.') {
+            return false;
+        }
+
+        // Verificar si hay espacio vacío en las posiciones adyacentes
+        if (row > 0 && board[row - 1][col] == '.') { // Arriba
+            return true;
+        }
+        if (row < board.length - 1 && board[row + 1][col] == '.') { // Abajo
+            return true;
+        }
+        if (col > 0 && board[row][col - 1] == '.') { // Izquierda
+            return true;
+        }
+        if (col < board[row].length - 1 && board[row][col + 1] == '.') { // Derecha
+            return true;
+        }
+
+        // Si no hay espacios vacíos adyacentes, la baldosa no se puede mover
+        return false;
+    }
+
 }
