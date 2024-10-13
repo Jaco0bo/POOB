@@ -8,6 +8,7 @@
  * @author Andres Jacobo Sepulveda
  * @version 2.0
  */
+import java.util.*;
 public class Tilt {
     private char[][] board; // Referencia al tablero principal
     private Glue glue;
@@ -135,6 +136,8 @@ public class Tilt {
     
     // Método para determinar si una baldosa puede moverse
     public boolean canMoveTile(int row, int col) {
+        System.out.println("tilt"); 
+        System.out.println(Arrays.deepToString(board));
         // Verifica si la baldosa no es un espacio vacío
         if (board[row][col] == '.') {
             return false;
@@ -153,9 +156,11 @@ public class Tilt {
         if (col < board[row].length - 1 && board[row][col + 1] == '.') { // Derecha
             return true;
         }
-
         // Si no hay espacios vacíos adyacentes, la baldosa no se puede mover
         return false;
     }
-
+    
+    public char[][] getBoard(){
+        return board;
+    }
 }

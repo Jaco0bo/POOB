@@ -156,7 +156,6 @@ public class Puzzle {
      * @param columna Escoge la columna de la baldosa que quiere ser borrada
      */
     public void eliminarBaldosa(int fila, int columna) {
-        System.out.println("Intentando eliminar baldosa en (" + fila + ", " + columna + ")");
         
         // Verificar si la posición es válida
         if (fila >= 0 && fila < startingBoard.length && columna >= 0 && columna < startingBoard[0].length) {
@@ -169,7 +168,6 @@ public class Puzzle {
             // Proceder a eliminar la baldosa
             startingBoard[fila][columna] = '.'; // Representar baldosa eliminada con un punto (o cualquier otro símbolo)
             startingTablero.setBoard(startingBoard); // Actualizar el tablero en el objeto Rectangle
-            System.out.println("Baldosa eliminada en (" + fila + ", " + columna + ")");
     
             // Redibujar el tablero
             startingTablero.drawBoard(glue); 
@@ -274,16 +272,15 @@ public class Puzzle {
     }
 
     public void agregarBaldosa(int fila, int columna, char color) {
-        System.out.println("Intentando agregar baldosa en (" + fila + ", " + columna + ") con color '" + color + "'");
         if (fila >= 0 && fila < startingBoard.length && columna >= 0 && columna < startingBoard[0].length) {
             switch (color) {
                 case 'r':
                 case 'g':
                 case 'b':
                 case 'y':
+                case 'w':
                     startingBoard[fila][columna] = color; // Agregar la baldosa con el color dado
                     startingTablero.setBoard(startingBoard); // Actualizar el tablero en el objeto Rectangle
-                    System.out.println("Baldosa agregada en (" + fila + ", " + columna + ") con color '" + color + "'");
                     
                     // Redibujar el tablero
                     startingTablero.drawBoard(glue); 
@@ -494,33 +491,63 @@ public class Puzzle {
         return count;
     }
     
-    // Método para obtener las baldosas que no se pueden mover
     public int[][] fixedTiles() {
         List<int[]> fixedTilesList = new ArrayList<>();
         Canvas canvas = Canvas.getCanvas();
-
+        
+        // Sincronizar el tablero de Tilt con el de Puzzle
+        tilt.setBoard(startingBoard);  // <-- Agregar esta línea
+        
         for (int i = 0; i < startingBoard.length; i++) {
             for (int j = 0; j < startingBoard[i].length; j++) {
                 if (startingBoard[i][j] != '.' && !tilt.canMoveTile(i, j)) {
                     fixedTilesList.add(new int[]{i, j});
-
+    
                     // Hacer que la baldosa parpadee si el tablero está visible
                     if (tableVisible) {
-                        for (int k = 0; k < 3; k++) {
-                            canvas.setForegroundColor("white");
-                            canvas.drawRectangle(10 + j * 30, 20 + i * 30, 28, 28);
-                            canvas.wait(200);
-                            canvas.setForegroundColor("brown");  // Color base de la baldosa
-                            canvas.drawRectangle(10 + j * 30, 20 + i * 30, 28, 28);
-                            canvas.wait(200);
-                        }
+                        parpadearBaldosa(i,j);
                     }
                 }
             }
         }
-
+        System.out.println("puzzle");
+        System.out.println(Arrays.deepToString(startingBoard));
         return fixedTilesList.toArray(new int[fixedTilesList.size()][]);
     }
     
+    public void parpadearBaldosa(int fila, int columna) {
+        // Obtener el color original de la baldosa
+        char colorOriginal = startingBoard[fila][columna];
+        // Verificar que la baldosa en esa posición no sea un espacio vacío
+        if (colorOriginal != '.') {
+            for (int k = 0; k < 21; k++) {  // Número de veces que queremos que parpadee
+                // Eliminar la baldosa en esa posición
+                eliminarBaldosa(fila, columna);
+    
+                // Agregar una baldosa temporal de color blanco
+                agregarBaldosa(fila, columna, 'w'); // 'w' para blanco (puedes ajustarlo si usas otro símbolo)
+    
+                // Pausa para simular el parpadeo
+                try {
+                    Thread.sleep(50); 
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+    
+                // Eliminar la baldosa blanca
+                eliminarBaldosa(fila, columna);
+    
+                // Restaurar la baldosa con su color original
+                agregarBaldosa(fila, columna, colorOriginal);
+    
+                // Pausa antes de la siguiente iteración del parpadeo
+                try {
+                    Thread.sleep(50); 
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
 

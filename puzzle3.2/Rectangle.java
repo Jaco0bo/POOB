@@ -266,6 +266,8 @@ public class Rectangle{
                         case '.':
                             canvas.setForegroundColor("brown");
                             break;
+                        case 'w':
+                            canvas .setForegroundColor("white");
                     }
     
                     // Dibuja cada celda del tablero con el nuevo tamaño y espaciado

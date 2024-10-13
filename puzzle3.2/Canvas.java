@@ -52,6 +52,11 @@ public class Canvas{
      */
     private Canvas(String title, int width, int height, Color bgColour){
         frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Configuración del comportamiento de cierre
+        frame.setAlwaysOnTop(true); // Mantener la ventana siempre encima de otras
+        frame.setResizable(false); // Evitar cambios de tamaño
+        frame.setFocusable(true); // Asegúrate de que la ventana sea enfocada
+        
         canvas = new CanvasPane();
         frame.setContentPane(canvas);
         frame.setTitle(title);
@@ -157,6 +162,7 @@ public class Canvas{
                        shapes.get(i.next()).draw(graphic);
         }
         canvas.repaint();
+        frame.requestFocusInWindow();
     }
        
     /**
