@@ -19,6 +19,7 @@ public class Puzzle {
     private Tilt tilt;
     private Hole hole;
     private boolean tableVisible = false;
+    private int depth;
     
     public Puzzle(){
         this.startingBoard = startingBoard;
@@ -38,6 +39,7 @@ public class Puzzle {
         this.glue = new Glue(startingBoard, startingTablero);// Inicializar el objeto Glue con el tablero inicial
         this.hole = new Hole(startingTablero); // Cambiado para inicializar con el tablero
         this.tilt = new Tilt(startingBoard, glue);  // Pasar el agujero a Tilt
+        this.depth = 5;
         
         // Ajustamos las posiciones para que los tableros no se superpongan
         this.startingTablero = new Rectangle(width * 30, height * 30, 10, 20, "brown", true, false); // Tablero inicial
@@ -476,7 +478,7 @@ public class Puzzle {
         System.exit(0); 
     }
     
-     // Método para obtener el número de baldosas que están mal colocadas
+    // Método para obtener el número de baldosas que están mal colocadas
     public int misplacedTiles() {
         int count = 0;
 
@@ -504,7 +506,9 @@ public class Puzzle {
                     fixedTilesList.add(new int[]{i, j});
     
                     // Hacer que la baldosa parpadee si el tablero está visible
+                    System.out.println(tableVisible);
                     if (tableVisible) {
+                        System.out.println("Parpadeando baldosa en fila: " + i + ", columna: " + j);
                         parpadearBaldosa(i,j);
                     }
                 }
@@ -515,39 +519,148 @@ public class Puzzle {
         return fixedTilesList.toArray(new int[fixedTilesList.size()][]);
     }
     
-    public void parpadearBaldosa(int fila, int columna) {
-        // Obtener el color original de la baldosa
-        char colorOriginal = startingBoard[fila][columna];
-        // Verificar que la baldosa en esa posición no sea un espacio vacío
-        if (colorOriginal != '.') {
-            for (int k = 0; k < 21; k++) {  // Número de veces que queremos que parpadee
-                // Eliminar la baldosa en esa posición
-                eliminarBaldosa(fila, columna);
+    private void parpadearBaldosa(int fila, int columna) {
+        // Crear un hilo para manejar el parpadeo de la baldosa
+        new Thread(() -> {
+            char colorOriginal = startingBoard[fila][columna];
+            if (colorOriginal != '.') {
+                Canvas canvas = Canvas.getCanvas();  // Obtener la referencia al canvas
+                for (int k = 0; k < 21; k++) {  // Número de veces que queremos que parpadee
+                    eliminarBaldosa(fila, columna);
+                    agregarBaldosa(fila, columna, 'w'); // 'w' para blanco
     
-                // Agregar una baldosa temporal de color blanco
-                agregarBaldosa(fila, columna, 'w'); // 'w' para blanco (puedes ajustarlo si usas otro símbolo)
+                    // Pausa para simular el parpadeo
+                    try {
+                        Thread.sleep(50); 
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
     
-                // Pausa para simular el parpadeo
-                try {
-                    Thread.sleep(50); 
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    eliminarBaldosa(fila, columna);
+                    agregarBaldosa(fila, columna, colorOriginal);
+    
+                    // Pausa antes de la siguiente iteración del parpadeo
+                    try {
+                        Thread.sleep(50); 
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+            }
+        }).start();  // Iniciar el hilo
+    }
     
-                // Eliminar la baldosa blanca
-                eliminarBaldosa(fila, columna);
+    public void tilt() {
+        dfsTilt(startingBoard, depth);
+    }
     
-                // Restaurar la baldosa con su color original
-                agregarBaldosa(fila, columna, colorOriginal);
+    // Método para aplicar un movimiento (tilt) al tablero
+    private void tilt(char[][] board, String direction) {
+        // Establecer el tablero proporcionado en el objeto Tilt
+        tilt.setBoard(board);
     
-                // Pausa antes de la siguiente iteración del parpadeo
-                try {
-                    Thread.sleep(50); 
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        // Inclinar el tablero y mover las baldosas
+        tilt.tilt(direction);
+    
+        // Redibujar el tablero (puedes modificar esta parte si el dibujo no es necesario)
+        startingTablero.setBoard(board);
+        startingTablero.drawBoard(glue);  // Suponiendo que `drawBoard` dibuja el tablero sin tener en cuenta el pegamento
+    
+        // Forzar el repintado del canvas para reflejar los cambios
+        Canvas canvas = Canvas.getCanvas();
+        canvas.getCanvasPane().repaint(); 
+        canvas.wait(10);
+    
+        System.out.println("Tablero inclinado hacia " + direction);
+        System.out.println(Arrays.deepToString(board));
+    }
+  
+    // Sobrecarga de misplacedTiles para evaluar tableros simulados
+    private int misplacedTiles(char[][] board) {
+        int count = 0;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j] != '.' && board[i][j] != endingBoard[i][j]) {
+                    count++;
                 }
             }
         }
+        return count;
     }
-}
+    
+    private void dfsTilt(char[][] board, int depth) {
+        // Condición de parada: si el tablero es igual al tablero final
+        if (Arrays.deepEquals(board, endingBoard)) {
+            System.out.println("Solucion Encontrada");
+            System.out.println(Arrays.deepToString(board)); // Mostrar el tablero final
+            
+            // Actualizar startingBoard con el tablero final
+            for (int i = 0; i < board.length; i++) {
+                System.arraycopy(board[i], 0, startingBoard[i], 0, board[i].length);
+            }
+            return;
+        }
+    
+        // Si el límite de profundidad se alcanza, detener la búsqueda
+        if (depth == 0) {
+            return;
+        }
+    
+        // Conjunto para guardar configuraciones ya visitadas
+        Set<String> visitedStates = new HashSet<>();
+        
+        // Convertir el tablero actual en una cadena para almacenar en el conjunto
+        String currentState = boardToString(board);
+        if (visitedStates.contains(currentState)) {
+            return; // Ya hemos visitado este estado, no seguimos por este camino
+        }
+        
+        // Marcar el estado actual como visitado
+        visitedStates.add(currentState);
+    
+        // Intentar los cuatro posibles movimientos
+        String[] directions = {"arriba", "abajo", "izquierda", "derecha"};
+        
+        for (String direction : directions) {
+            // Crear una copia del tablero actual para inclinar
+            char[][] newBoard = copyBoard(board);
+            
+            // Inclinar el nuevo tablero
+            tilt(newBoard, direction);
+            
+            // Mostrar el movimiento realizado
+            System.out.println("Inclinando hacia " + direction);
+            System.out.println(Arrays.deepToString(newBoard));
+            
+            // Volver a llamar a DFS con el tablero inclinado y profundizar
+            dfsTilt(newBoard, depth - 1);
+    
+            // Si la solución se encuentra en esta llamada recursiva, se debe retornar
+            if (Arrays.deepEquals(newBoard, endingBoard)) {
+                System.out.println("Tablero final encontrado después de inclinar hacia " + direction);
+                return;
+            }
+        }
+    }
 
+    // Método auxiliar para convertir el tablero a un String para almacenar en el conjunto
+    private String boardToString(char[][] board) {
+        StringBuilder sb = new StringBuilder();
+        for (char[] row : board) {
+            for (char cell : row) {
+                sb.append(cell);
+            }
+        }
+        return sb.toString();
+        }
+    
+    // Método auxiliar para copiar un tablero
+    private char[][] copyBoard(char[][] board) {
+        char[][] newBoard = new char[board.length][board[0].length];
+        for (int i = 0; i < board.length; i++) {
+            System.arraycopy(board[i], 0, newBoard[i], 0, board[i].length);
+        }
+        return newBoard;
+    }
+
+}
