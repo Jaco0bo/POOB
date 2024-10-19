@@ -179,14 +179,41 @@ public class Glue{
     }
     
     public void updateGlueState(boolean[][] newGlueApplied) {
-    this.glueApplied = newGlueApplied;
+        this.glueApplied = newGlueApplied;
+        }
+    
+    public boolean[][] getGlueState(char[][] board) {
+        // Crear una nueva matriz para almacenar el estado del pegamento
+        boolean[][] glueState = new boolean[board.length][board[0].length];
+    
+        // Revisa cada posición en el tablero y asigna el estado del pegamento
+        for (int row = 0; row < board.length; row++) {
+            for (int col = 0; col < board[0].length; col++) {
+                glueState[row][col] = isGlued(row, col); // Verifica si la baldosa está pegada
+            }
+        }
+        
+        return glueState; // Retorna el estado del pegamento para el tablero dado
+    }
+
+    // Método para clonar el estado del pegamento
+    public boolean[][] cloneGlueState() {
+        boolean[][] clonedState = new boolean[glueApplied.length][];
+        for (int i = 0; i < glueApplied.length; i++) {
+            clonedState[i] = glueApplied[i].clone();
+        }
+        return clonedState;
     }
     
-       public boolean [][] getGlueState() {
-        // Revisa si la baldosa en (row, col) está pegada a las adyacentes
-        return glueApplied;
+    // Método para obtener el estado del pegamento para un tablero específico
+    public boolean[][] getGlueStateForBoard(char[][] board) {
+        boolean[][] state = new boolean[board.length][board[0].length];
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                state[i][j] = glueApplied[i][j]; 
+            }
+        }
+        return state;
     }
 
 }
-
-    

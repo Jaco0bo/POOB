@@ -1,3 +1,4 @@
+import java.util.*;
 /**
  * Esta clase Tilt inclina el tablero en diferentes direcciones y mueve las baldosas en esa dirección.
  * Funciona con un tablero representado como una matriz de caracteres donde las baldosas se representan
@@ -7,8 +8,8 @@
  * @author Camilo Andres Fernandez Diaz 
  * @author Andres Jacobo Sepulveda
  * @version 2.0
- */
-import java.util.*;
+*/
+
 public class Tilt {
     private char[][] board; // Referencia al tablero principal
     private Glue glue;
@@ -138,25 +139,27 @@ public class Tilt {
     public boolean canMoveTile(int row, int col) {
         System.out.println("tilt"); 
         System.out.println(Arrays.deepToString(board));
+    
         // Verifica si la baldosa no es un espacio vacío
         if (board[row][col] == '.') {
             return false;
         }
-
-        // Verificar si hay espacio vacío en las posiciones adyacentes
-        if (row > 0 && board[row - 1][col] == '.') { // Arriba
-            return true;
+    
+        // Verificar si hay espacio vacío en la misma fila
+        for (int i = 0; i < board[row].length; i++) {
+            if (board[row][i] == '.') {
+                return true;
+            }
         }
-        if (row < board.length - 1 && board[row + 1][col] == '.') { // Abajo
-            return true;
+    
+        // Verificar si hay espacio vacío en la misma columna
+        for (int i = 0; i < board.length; i++) {
+            if (board[i][col] == '.') {
+                return true;
+            }
         }
-        if (col > 0 && board[row][col - 1] == '.') { // Izquierda
-            return true;
-        }
-        if (col < board[row].length - 1 && board[row][col + 1] == '.') { // Derecha
-            return true;
-        }
-        // Si no hay espacios vacíos adyacentes, la baldosa no se puede mover
+    
+        // Si no hay espacios vacíos en la misma fila o columna, la baldosa no se puede mover
         return false;
     }
     

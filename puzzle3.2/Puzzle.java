@@ -21,16 +21,6 @@ public class Puzzle {
     private boolean tableVisible = false;
     private int depth;
     
-    public Puzzle(){
-        this.startingBoard = startingBoard;
-        this.endingBoard = endingBoard;
-        this.startingTablero = new Rectangle(); // Inicializar si es necesario
-        this.endingTablero = new Rectangle();   // Inicializar si es necesario  
-        this.glue = new Glue(startingBoard, startingTablero);// Inicializar el objeto Glue con el tablero inicial
-        this.hole = new Hole(startingTablero); // Cambiado para inicializar con el tablero
-        this.tilt = new Tilt(startingBoard, glue);  // Pasar el agujero a Tilt
-    }
-    
     public Puzzle(int h, int w) {
         this.height = h;
         this.width = w;
@@ -163,7 +153,7 @@ public class Puzzle {
         if (fila >= 0 && fila < startingBoard.length && columna >= 0 && columna < startingBoard[0].length) {
             // Verificar si la baldosa tiene pegante
             if (glue.isGlued(fila, columna)) {
-                System.out.println("No se puede eliminar la baldosa en (" + fila + ", " + columna + ") porque tiene pegante.");
+                System.out.println("No se puede eliminar la baldosa porque tiene pegante.");
                 return; // Salir del método si la baldosa tiene pegante
             }
     
@@ -187,7 +177,10 @@ public class Puzzle {
         // Verificar límites
         if (filaActual >= 0 && filaActual < startingBoard.length && columnaActual >= 0 && columnaActual < startingBoard[0].length
                 && nuevaFila >= 0 && nuevaFila < startingBoard.length && nuevaColumna >= 0 && nuevaColumna < startingBoard[0].length) {
-    
+            if (startingBoard[nuevaFila][nuevaColumna] != '.') {
+                System.out.println("No se puede reubicar la baldosa. La posición (" + nuevaFila + ", " + nuevaColumna + ") ya está ocupada.");
+                return; // No hacer nada si la posición está ocupada
+            }
             char baldosa = startingBoard[filaActual][columnaActual];
             if (baldosa != '.') { // Verificar que la baldosa no esté vacía
                 
@@ -275,6 +268,10 @@ public class Puzzle {
 
     public void agregarBaldosa(int fila, int columna, char color) {
         if (fila >= 0 && fila < startingBoard.length && columna >= 0 && columna < startingBoard[0].length) {
+            if (startingBoard[fila][columna] != '.') {
+                System.out.println("No se puede agregar la baldosa. La posición (" + fila + ", " + columna + ") ya está ocupada.");
+                return; // No hacer nada si la posición está ocupada
+            }
             switch (color) {
                 case 'r':
                 case 'g':
@@ -350,42 +347,50 @@ public class Puzzle {
         canvas.getCanvasPane().repaint(); // Forzar redibujado
     }
     
-    public void exchange(){
+    public void exchange() {
+        // Estado del pegamento antes del intercambio
+        System.out.println("Estado del pegamento en startingBoard antes del intercambio:");
+        System.out.println(Arrays.deepToString(glue.getGlueStateForBoard(startingBoard)));
+    
+        System.out.println("Estado del pegamento en endingBoard antes del intercambio:");
+        System.out.println(Arrays.deepToString(glue.getGlueStateForBoard(endingBoard)));
+    
         // Intercambiar referencias de los tableros
         Rectangle tempTablero = startingTablero; // Variable temporal
         startingTablero = endingTablero;
         endingTablero = tempTablero;
-        
+    
         // Intercambiar las posiciones de los tableros
         int tempX = startingTablero.getXPosition();
         int tempY = startingTablero.getYPosition();
         startingTablero.setPosition(endingTablero.getXPosition(), endingTablero.getYPosition());
         endingTablero.setPosition(tempX, tempY);
-        
+    
         // Intercambiar los contenidos de los tableros
         char[][] tempBoard = startingBoard;
         startingBoard = endingBoard;
         endingBoard = tempBoard;
-        
-        
-        // Actualizar los tableros con los nuevos contenidos 
+    
+        // Clonar los estados del pegamento
+        boolean[][] glueStateStarting = glue.cloneGlueState(); // Estado antes de intercambiar
+        boolean[][] glueStateEnding = glue.cloneGlueState(); // Estado antes de intercambiar
+    
+        // Actualizar el estado del pegamento
+        glue.updateGlueState(glueStateEnding); // Aquí puedes decidir qué estado asignar a cada tablero
+    
+        // Mostrar el estado del pegamento después de actualizar
+        System.out.println("Estado del pegamento en endingBoard después de actualizar:");
+        System.out.println(Arrays.deepToString(glue.getGlueStateForBoard(endingBoard)));
+    
+        // Actualizar los tableros con los nuevos contenidos
         startingTablero.setBoard(startingBoard);
         endingTablero.setBoard(endingBoard);
-        
+    
         // Redibujar los tableros
         Canvas canvas = Canvas.getCanvas();
         canvas.setVisible(true);
         startingTablero.drawBoard(glue);
         endingTablero.drawBoard(glue);
-        canvas.getCanvasPane().repaint(); // Forzar redibujado
-    }
-    
-    public void makeHole(int row, int column) {
-        hole.makeHole(row, column);  // Crear el agujero
-        startingTablero.setBoard(startingBoard); // Actualizar el tablero en el objeto Rectangle
-        startingTablero.drawBoard(glue); // Redibujar el tablero completo
-        hole.drawHole(); // Dibujar el agujero
-        Canvas canvas = Canvas.getCanvas(); // Obtener Canvas
         canvas.getCanvasPane().repaint(); // Forzar redibujado
     }
 
@@ -394,7 +399,7 @@ public class Puzzle {
         tilt.setBoard(startingBoard);
         
         // Crear una copia del estado actual del pegamento para comparaciones posteriores
-        boolean[][] originalGlue = glue.getGlueState();
+        boolean[][] originalGlue = glue.getGlueState(startingBoard);
     
         // Inclinar el tablero y mover las baldosas
         tilt.tilt(direction);
@@ -496,9 +501,10 @@ public class Puzzle {
     public int[][] fixedTiles() {
         List<int[]> fixedTilesList = new ArrayList<>();
         Canvas canvas = Canvas.getCanvas();
+        makeVisibleTable();
         
         // Sincronizar el tablero de Tilt con el de Puzzle
-        tilt.setBoard(startingBoard);  // <-- Agregar esta línea
+        tilt.setBoard(startingBoard);  
         
         for (int i = 0; i < startingBoard.length; i++) {
             for (int j = 0; j < startingBoard[i].length; j++) {
@@ -562,9 +568,9 @@ public class Puzzle {
         // Inclinar el tablero y mover las baldosas
         tilt.tilt(direction);
     
-        // Redibujar el tablero (puedes modificar esta parte si el dibujo no es necesario)
+        // Redibujar el tablero 
         startingTablero.setBoard(board);
-        startingTablero.drawBoard(glue);  // Suponiendo que `drawBoard` dibuja el tablero sin tener en cuenta el pegamento
+        startingTablero.drawBoard(glue);  
     
         // Forzar el repintado del canvas para reflejar los cambios
         Canvas canvas = Canvas.getCanvas();
@@ -612,7 +618,7 @@ public class Puzzle {
         // Convertir el tablero actual en una cadena para almacenar en el conjunto
         String currentState = boardToString(board);
         if (visitedStates.contains(currentState)) {
-            return; // Ya hemos visitado este estado, no seguimos por este camino
+            return; 
         }
         
         // Marcar el estado actual como visitado
@@ -661,6 +667,14 @@ public class Puzzle {
             System.arraycopy(board[i], 0, newBoard[i], 0, board[i].length);
         }
         return newBoard;
+    }
+    
+    public int getDepth(){
+        return depth;
+    }
+    
+    public char[][] getStartingBoard(){
+        return startingBoard;
     }
 
 }
