@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import org.junit.jupiter.api.Nested;
+
 
 /**
  * The test class PuzzleC2Test.
@@ -14,6 +16,7 @@ import java.io.PrintStream;
 public class PuzzleC2Test{
     private Puzzle puzzle;
     private char [][] startingBoard;
+    private char [][] endingBoard;
     private Glue glue;
     /**
      * Default constructor for test class PuzzleC2Test
@@ -185,4 +188,96 @@ public class PuzzleC2Test{
         assertTrue(outContent.toString().contains(expectedOutput));
     }
     
+    /**
+     * Test para revisar que no se permite eliminar una baldosa si tiene pegante 
+     */
+     @Test
+    public void accordingFSShouldExchangeTBoards() {
+        // Crear una instancia de Puzzle y configurarlo
+        Puzzle puzzle = new Puzzle(startingBoard, startingBoard);
+        puzzle.agregarBaldosa(0, 0, 'r'); // Agregar una baldosa en (0,0)
+        
+        // Redirigir la salida estándar
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+    
+        // Agregar pegamento en (0,0)
+        puzzle.addGlue(0, 0); 
+        
+        // Intentar eliminar la baldosa (0,0) con pegamento
+        puzzle.eliminarBaldosa(0,0);
+        // Restablecer la salida estándar
+        System.setOut(originalOut);
+    
+        // Verificar que el mensaje correcto se imprimió
+        String expectedOutput = "No se puede eliminar la baldosa porque tiene pegante.";
+        assertTrue(outContent.toString().contains(expectedOutput));
+    }    
+    
+@Nested
+class ExchangeMethodTests {
+
+    private Puzzle puzzle;
+    private char[][] startingBoard;
+    private char[][] endingBoard;
+    private Glue glue;
+
+    @BeforeEach
+    public void setUpForExchange() {
+        // Inicializa los tableros con diferentes configuraciones
+        startingBoard = new char[][]{
+            {'.', '.', '.'},
+            {'.', '.', '.'},
+            {'.', '.', '.'}
+        };
+        endingBoard = new char[][]{
+            {'r', 'b', 'g'},
+            {'y', '.', '.'},
+            {'.', '.', '.'}
+        };
+        
+        puzzle = new Puzzle(startingBoard, endingBoard); // Puzzle con starting y ending boards
+        glue = new Glue(startingBoard, new Rectangle()); // Glue para el tablero inicial
+    }
+
+    @Test
+    public void shouldExchangeBoardsSuccessfully() {
+        // Configurar el estado inicial de los tableros y pegamento
+        puzzle.agregarBaldosa(0, 0, 'r');
+        puzzle.addGlue(0, 0);
+
+        // Intercambiar los tableros
+        puzzle.exchange();
+
+        // Verificar que los tableros y las posiciones fueron intercambiados
+        assertArrayEquals(endingBoard, puzzle.getStartingBoard(), "El tablero inicial debería haberse intercambiado.");
+        assertArrayEquals(startingBoard, puzzle.getEndingBoard(), "El tablero final debería haberse intercambiado.");
+    }
+    
+    @Test
+    public void testMisplacedTilesWithValidEndingBoard() {
+        // Inicializa el tablero de inicio y el de final
+        startingBoard = new char[][]{
+            {'r', 'b', 'g'},
+            {'.', 'y', '.'},
+            {'.', '.', '.'}
+        };
+        endingBoard = new char[][]{
+            {'r', 'g', 'b'},
+            {'.', 'y', '.'},
+            {'.', '.', '.'}
+        };
+        
+        // Crea la instancia de Puzzle con ambos tableros
+        puzzle = new Puzzle(startingBoard, endingBoard);
+        
+        // Llama al método y verifica que el conteo de baldosas mal colocadas es correcto
+        int misplaced = puzzle.misplacedTiles();
+        
+        // (b y g en las posiciones incorrectas)
+        assertEquals(2, misplaced);
+    }
+    
+}
 }

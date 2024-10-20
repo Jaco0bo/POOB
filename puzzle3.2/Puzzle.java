@@ -16,6 +16,7 @@ public class Puzzle {
     private char[][] startingBoard;
     private char[][] endingBoard;
     private Glue glue;
+    private Glue endingGlue;
     private Tilt tilt;
     private Hole hole;
     private boolean tableVisible = false;
@@ -26,7 +27,6 @@ public class Puzzle {
         this.width = w;
         this.endingBoard = new char[height][width];
         this.startingBoard = new char[height][width]; // Inicializamos startingBoard vacío
-        this.glue = new Glue(startingBoard, startingTablero);// Inicializar el objeto Glue con el tablero inicial
         this.hole = new Hole(startingTablero); // Cambiado para inicializar con el tablero
         this.tilt = new Tilt(startingBoard, glue);  // Pasar el agujero a Tilt
         this.depth = 5;
@@ -34,7 +34,8 @@ public class Puzzle {
         // Ajustamos las posiciones para que los tableros no se superpongan
         this.startingTablero = new Rectangle(width * 30, height * 30, 10, 20, "brown", true, false); // Tablero inicial
         this.endingTablero = new Rectangle(width * 30, height * 30, (width * 30) + 40, 20, "brown", true, false); // Tablero final
-    
+         this.glue = new Glue(startingBoard, startingTablero);// Inicializar el objeto Glue con el tablero inicial
+        this.endingGlue = new Glue(endingBoard, endingTablero);// Inicializar el objeto Glue con el tablero inicial
         initializeBoard(startingBoard); // Tablero inicial vacío
     
         // Configurar los tableros en los objetos Rectangle
@@ -54,7 +55,7 @@ public class Puzzle {
     
         // Dibujar solo el tablero inicial aquí
         startingTablero.drawBoard(glue);
-        endingTablero.drawBoard(glue);
+        endingTablero.drawBoard(endingGlue);
     }
 
     private void initializeBoard(char[][] board) {
@@ -65,17 +66,20 @@ public class Puzzle {
         }
     }
     
-    public Puzzle(char[][] endingBoard) {
+    public Puzzle(char[][] endingBoard) {       
         // Llama al primer constructor con las dimensiones del tablero final
         this(endingBoard.length, endingBoard[0].length);
-    
+        
         // Reemplaza el tablero final generado por el proporcionado
         this.endingBoard = endingBoard;
-    
+        
         // Vuelve a configurar el tablero final en el objeto Rectangle
         endingTablero.setBoard(endingBoard);
-
-        endingTablero.drawBoard(glue); // Solo dibuja el tablero final
+            
+        this.endingGlue = new Glue(endingBoard, endingTablero);
+    
+        endingTablero.drawBoard(endingGlue); // Solo dibuja el tablero final
+        
     }
     
     // Constructor 3: Recibe el tablero inicial y final
@@ -348,13 +352,6 @@ public class Puzzle {
     }
     
     public void exchange() {
-        // Estado del pegamento antes del intercambio
-        System.out.println("Estado del pegamento en startingBoard antes del intercambio:");
-        System.out.println(Arrays.deepToString(glue.getGlueStateForBoard(startingBoard)));
-    
-        System.out.println("Estado del pegamento en endingBoard antes del intercambio:");
-        System.out.println(Arrays.deepToString(glue.getGlueStateForBoard(endingBoard)));
-    
         // Intercambiar referencias de los tableros
         Rectangle tempTablero = startingTablero; // Variable temporal
         startingTablero = endingTablero;
@@ -378,10 +375,6 @@ public class Puzzle {
         // Actualizar el estado del pegamento
         glue.updateGlueState(glueStateEnding); // Aquí puedes decidir qué estado asignar a cada tablero
     
-        // Mostrar el estado del pegamento después de actualizar
-        System.out.println("Estado del pegamento en endingBoard después de actualizar:");
-        System.out.println(Arrays.deepToString(glue.getGlueStateForBoard(endingBoard)));
-    
         // Actualizar los tableros con los nuevos contenidos
         startingTablero.setBoard(startingBoard);
         endingTablero.setBoard(endingBoard);
@@ -393,6 +386,13 @@ public class Puzzle {
         endingTablero.drawBoard(glue);
         canvas.getCanvasPane().repaint(); // Forzar redibujado
     }
+
+    private void printGlueState(boolean[][] glueState) {
+        for (boolean[] row : glueState) {
+            System.out.println(Arrays.toString(row));
+        }
+    }
+
 
     public void tiltBoard(String direction) {
         // Establecer el tablero actual en el objeto Tilt
@@ -485,6 +485,9 @@ public class Puzzle {
     
     // Método para obtener el número de baldosas que están mal colocadas
     public int misplacedTiles() {
+        if (endingBoard == null) {
+            return 0; // O lanzar una excepción
+        }
         int count = 0;
 
         for (int i = 0; i < startingBoard.length; i++) {
@@ -675,6 +678,10 @@ public class Puzzle {
     
     public char[][] getStartingBoard(){
         return startingBoard;
+    }
+    
+    public char[][] getEndingBoard(){
+        return endingBoard;
     }
 
 }

@@ -7,8 +7,11 @@
  */
 public class Glue{
     private Rectangle tablero;
+    private Rectangle endingTablero;
     private char[][] board;
+    private char[][] endingBoard;
     private boolean[][] glueApplied;
+    private boolean [][] glueAppliedEnding;
     private boolean[][] newGlueApplied;
     private int glueSize = 10;  
     private int tileSize = 30;   
@@ -19,6 +22,17 @@ public class Glue{
         this.board = board;
         this.tablero = tablero;
         this.glueApplied = new boolean[board.length][board[0].length]; // Inicializar matriz de pegante
+    }
+    
+    public Glue(char[][] board, Rectangle tablero, char[][] endingBoard, Rectangle endingTablero){
+        this.board = board;
+        this.tablero = tablero;
+        this.endingBoard = endingBoard;
+        this.endingTablero = endingTablero;
+    
+        // Inicializar las matrices de pegamento para ambos tableros
+        this.glueApplied = new boolean[board.length][board[0].length];
+        this.glueAppliedEnding = new boolean[endingBoard.length][endingBoard[0].length];
     }
     
     public void adGlue(int fila, int columna) {
@@ -132,6 +146,11 @@ public class Glue{
     public boolean isGlued(int row, int col) {
         // Revisa si la baldosa en (row, col) está pegada a las adyacentes
         return glueApplied[row][col];
+    }
+    
+    
+    public boolean isGluedInEndingBoard(int row, int col) {
+        return glueAppliedEnding[row][col];
     }
     
     public int getGlueSize(){
