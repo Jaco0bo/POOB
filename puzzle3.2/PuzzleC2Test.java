@@ -38,7 +38,8 @@ public class PuzzleC2Test{
         {'.', '.', '.'}
         };
         puzzle = new Puzzle(startingBoard); // Inicializar el puzzle con el tablero
-        glue = new Glue(startingBoard, new Rectangle()); // Rempalza rectangle con la implementacion adecuada
+        glue = new Glue(startingBoard, new Rectangle()); // Remplaza rectangle con la implementacion adecuada
+        puzzle.makeInvisibleTable(); // Tablero invisible
     }
     
     /**
@@ -58,6 +59,7 @@ public class PuzzleC2Test{
      */
     @Test
     public void accordingFSShouldntAddATile(){
+        puzzle.makeInvisibleTable(); // Tablero invisible
         // agregar una baldosa
         puzzle.agregarBaldosa(0,0,'r'); // Agregamos una baldosa roja en la posicion (0,0)
         
@@ -195,6 +197,7 @@ public class PuzzleC2Test{
     public void accordingFSShouldExchangeTBoards() {
         // Crear una instancia de Puzzle y configurarlo
         Puzzle puzzle = new Puzzle(startingBoard, startingBoard);
+        puzzle.makeInvisibleTable(); // Tablero invisible
         puzzle.agregarBaldosa(0, 0, 'r'); // Agregar una baldosa en (0,0)
         
         // Redirigir la salida estándar
@@ -203,9 +206,11 @@ public class PuzzleC2Test{
         System.setOut(new PrintStream(outContent));
     
         // Agregar pegamento en (0,0)
+        puzzle.makeInvisibleTable(); // Tablero invisible
         puzzle.addGlue(0, 0); 
-        
+        puzzle.makeInvisibleTable(); // Tablero invisible
         // Intentar eliminar la baldosa (0,0) con pegamento
+        puzzle.makeInvisibleTable(); // Tablero invisible
         puzzle.eliminarBaldosa(0,0);
         // Restablecer la salida estándar
         System.setOut(originalOut);
@@ -213,7 +218,7 @@ public class PuzzleC2Test{
         // Verificar que el mensaje correcto se imprimió
         String expectedOutput = "No se puede eliminar la baldosa porque tiene pegante.";
         assertTrue(outContent.toString().contains(expectedOutput));
-    }    
+    }   
     
 @Nested
 class ExchangeMethodTests {
@@ -239,10 +244,11 @@ class ExchangeMethodTests {
         
         puzzle = new Puzzle(startingBoard, endingBoard); // Puzzle con starting y ending boards
         glue = new Glue(startingBoard, new Rectangle()); // Glue para el tablero inicial
+        puzzle.makeInvisibleTable(); // Tablero invisible
     }
 
     @Test
-    public void shouldExchangeBoardsSuccessfully() {
+    public void accordingFSShouldExchangeBoardsSuccessfully() {
         // Configurar el estado inicial de los tableros y pegamento
         puzzle.agregarBaldosa(0, 0, 'r');
         puzzle.addGlue(0, 0);
@@ -256,7 +262,7 @@ class ExchangeMethodTests {
     }
     
     @Test
-    public void testMisplacedTilesWithValidEndingBoard() {
+    public void accordingFSShouldCalculatedMisplacedTilesWithValidEndingBoard() {
         // Inicializa el tablero de inicio y el de final
         startingBoard = new char[][]{
             {'r', 'b', 'g'},
@@ -279,5 +285,29 @@ class ExchangeMethodTests {
         assertEquals(2, misplaced);
     }
     
+    /**
+     * Test para revisar que makeVisible funciona correctamente 
+     */
+     @Test
+    public void accordingFSShouldSetVisibleBoards() {
+        // Crear una instancia de Puzzle y configurarlo
+        Puzzle puzzle = new Puzzle(startingBoard, startingBoard);
+        puzzle.makeVisibleTable(); // Tablero visible
+        puzzle.agregarBaldosa(0,0,'r');
+        assertTrue(puzzle.isTableVisible());
+    }   
+    
+    /**
+     * Test para revisar que makeInvisible funciona correctamente 
+     */
+     @Test
+    public void accordingFSShouldSetInvisibleBoards() {
+        // Crear una instancia de Puzzle y configurarlo
+        Puzzle puzzle = new Puzzle(startingBoard, startingBoard);
+        puzzle.makeVisibleTable(); // Tablero visible
+        puzzle.agregarBaldosa(0,0,'r');
+        puzzle.makeInvisibleTable(); // Tablero invisible
+        assertFalse(puzzle.isTableVisible());
+    }   
 }
 }

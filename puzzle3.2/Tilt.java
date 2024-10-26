@@ -41,13 +41,11 @@ public class Tilt {
 
     // Método para inclinar hacia arriba
     private void tiltUp() {
-        System.out.println("Inclinando hacia arriba");
         for (int col = 0; col < board[0].length; col++) {
             int writeIndex = 0;
             for (int row = 0; row < board.length; row++) {
                 if (board[row][col] != '.') {
                     board[writeIndex][col] = board[row][col];
-                    glue.moveGlue(row, col, writeIndex, col);
                     
                     if (writeIndex != row) {
                         board[row][col] = '.';
@@ -60,7 +58,6 @@ public class Tilt {
 
     // Método para inclinar hacia abajo
     private void tiltDown() {
-        System.out.println("Inclinando hacia abajo");
         for (int col = 0; col < board[0].length; col++) {
             int writeIndex = board.length - 1;
             for (int row = board.length - 1; row >= 0; row--) {
@@ -77,7 +74,6 @@ public class Tilt {
 
     // Método para inclinar hacia la izquierda
     private void tiltLeft() {
-        System.out.println("Inclinando hacia la izquierda");
         for (int row = 0; row < board.length; row++) {
             int writeIndex = 0;
             for (int col = 0; col < board[0].length; col++) {
@@ -94,7 +90,6 @@ public class Tilt {
 
     // Método para inclinar hacia la derecha
     private void tiltRight() {
-        System.out.println("Inclinando hacia la derecha");
         for (int row = 0; row < board.length; row++) {
             int writeIndex = board[0].length - 1;
             for (int col = board[0].length - 1; col >= 0; col--) {

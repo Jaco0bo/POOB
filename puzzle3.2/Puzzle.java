@@ -9,7 +9,7 @@ import javax.swing.*;
  */
 
 public class Puzzle {
-    private int width;
+    private int width;  
     private int height;
     private Rectangle startingTablero;
     private Rectangle endingTablero;
@@ -528,7 +528,7 @@ public class Puzzle {
         return fixedTilesList.toArray(new int[fixedTilesList.size()][]);
     }
     
-    private void parpadearBaldosa(int fila, int columna) {
+    public void parpadearBaldosa(int fila, int columna) {
         // Crear un hilo para manejar el parpadeo de la baldosa
         new Thread(() -> {
             char colorOriginal = startingBoard[fila][columna];
@@ -579,9 +579,6 @@ public class Puzzle {
         Canvas canvas = Canvas.getCanvas();
         canvas.getCanvasPane().repaint(); 
         canvas.wait(10);
-    
-        System.out.println("Tablero inclinado hacia " + direction);
-        System.out.println(Arrays.deepToString(board));
     }
   
     // Sobrecarga de misplacedTiles para evaluar tableros simulados
@@ -597,22 +594,22 @@ public class Puzzle {
         return count;
     }
     
-    private void dfsTilt(char[][] board, int depth) {
+    protected boolean dfsTilt(char[][] board, int depth) {
         // Condición de parada: si el tablero es igual al tablero final
         if (Arrays.deepEquals(board, endingBoard)) {
-            System.out.println("Solucion Encontrada");
+            System.out.println("Solución Encontrada");
             System.out.println(Arrays.deepToString(board)); // Mostrar el tablero final
             
             // Actualizar startingBoard con el tablero final
             for (int i = 0; i < board.length; i++) {
                 System.arraycopy(board[i], 0, startingBoard[i], 0, board[i].length);
             }
-            return;
+            return true;  // Solución encontrada
         }
     
         // Si el límite de profundidad se alcanza, detener la búsqueda
         if (depth == 0) {
-            return;
+            return false;
         }
     
         // Conjunto para guardar configuraciones ya visitadas
@@ -621,7 +618,7 @@ public class Puzzle {
         // Convertir el tablero actual en una cadena para almacenar en el conjunto
         String currentState = boardToString(board);
         if (visitedStates.contains(currentState)) {
-            return; 
+            return false; 
         }
         
         // Marcar el estado actual como visitado
@@ -637,19 +634,14 @@ public class Puzzle {
             // Inclinar el nuevo tablero
             tilt(newBoard, direction);
             
-            // Mostrar el movimiento realizado
-            System.out.println("Inclinando hacia " + direction);
-            System.out.println(Arrays.deepToString(newBoard));
-            
             // Volver a llamar a DFS con el tablero inclinado y profundizar
-            dfsTilt(newBoard, depth - 1);
-    
-            // Si la solución se encuentra en esta llamada recursiva, se debe retornar
-            if (Arrays.deepEquals(newBoard, endingBoard)) {
+            if (dfsTilt(newBoard, depth - 1)) {
                 System.out.println("Tablero final encontrado después de inclinar hacia " + direction);
-                return;
+                return true;  // Solución encontrada en esta rama recursiva
             }
         }
+        
+        return false;  // No se encontró solución en esta rama
     }
 
     // Método auxiliar para convertir el tablero a un String para almacenar en el conjunto
@@ -661,7 +653,7 @@ public class Puzzle {
             }
         }
         return sb.toString();
-        }
+    }
     
     // Método auxiliar para copiar un tablero
     private char[][] copyBoard(char[][] board) {
@@ -682,6 +674,13 @@ public class Puzzle {
     
     public char[][] getEndingBoard(){
         return endingBoard;
+    }  
+    
+    public boolean findSolution(){
+        return dfsTilt(startingBoard, depth);
     }
-
+    
+    public boolean isTableVisible(){
+        return tableVisible;
+    }
 }
