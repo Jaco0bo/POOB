@@ -1,0 +1,22 @@
+#BlueJ class context
+comment0.target=Tile
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Tile\ here.\r\n\ \r\n\ @author\ Camilo\ Andres\ Fernandez\ Diaz\r\n\ @author\ Andres\ Jacobo\ Sepulveda\r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=type\ color
+comment1.target=Tile(java.lang.String,\ java.lang.String)
+comment2.params=type
+comment2.target=void\ setType(java.lang.String)
+comment3.params=
+comment3.target=java.lang.String\ getType()
+comment4.params=
+comment4.target=java.lang.String\ getColor()
+comment5.params=
+comment5.target=java.lang.String\ getLetter()
+comment6.params=
+comment6.target=boolean\ canBeRemoved()
+comment7.params=
+comment7.target=boolean\ canBeMoved()
+comment8.params=
+comment8.target=boolean\ canSlide()
+comment9.params=
+comment9.target=boolean\ fallsInHole()
+numComments=10
