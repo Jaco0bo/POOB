@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Nested;
 public class PuzzleC2Test{
     private Puzzle puzzle;
     private char [][] startingBoard;
-    private char [][] endingBoard;
     private Glue glue;
     /**
      * Default constructor for test class PuzzleC2Test
@@ -38,7 +37,7 @@ public class PuzzleC2Test{
         {'.', '.', '.'}
         };
         puzzle = new Puzzle(startingBoard); // Inicializar el puzzle con el tablero
-        glue = new Glue(startingBoard, new Rectangle()); // Remplaza rectangle con la implementacion adecuada
+        glue = new Glue(startingBoard, new Rectangle()); 
         puzzle.makeInvisibleTable(); // Tablero invisible
     }
     
@@ -218,15 +217,37 @@ public class PuzzleC2Test{
         // Verificar que el mensaje correcto se imprimió
         String expectedOutput = "No se puede eliminar la baldosa porque tiene pegante.";
         assertTrue(outContent.toString().contains(expectedOutput));
-    }   
+    }  
     
+     /**
+      * Test para revisar que se elimina correctamente el pegante de una baldosa
+      */
+     @Test
+     public void accordingFSShouldDeleteAGlueFromTile() {
+         // Crear una instancia de Puzzle y configurarlo
+         Puzzle puzzle = new Puzzle(startingBoard, startingBoard);
+         puzzle.makeInvisibleTable(); // Tablero invisible
+         puzzle.agregarBaldosa(0, 0, 'r'); // Agregar una baldosa en (0,0)
+         
+         // Agregar pegamento en (0,0)
+         puzzle.addGlue(0, 0);
+         
+         // Verificar que el pegamento efectivamente esta puesto
+         // assertTrue(glue.isGlued(0, 0));
+         
+         // Intentar eliminar el pegamento de la baldosa
+         puzzle.removeGlue(0,0);
+         
+         // Verificar que el pegamento efectivamente esta borrado
+         assertFalse(glue.isGlued(0, 0));
+     } 
+         
 @Nested
 class ExchangeMethodTests {
 
     private Puzzle puzzle;
     private char[][] startingBoard;
     private char[][] endingBoard;
-    private Glue glue;
 
     @BeforeEach
     public void setUpForExchange() {
@@ -243,7 +264,7 @@ class ExchangeMethodTests {
         };
         
         puzzle = new Puzzle(startingBoard, endingBoard); // Puzzle con starting y ending boards
-        glue = new Glue(startingBoard, new Rectangle()); // Glue para el tablero inicial
+        new Glue(startingBoard, new Rectangle());
         puzzle.makeInvisibleTable(); // Tablero invisible
     }
 
@@ -308,6 +329,42 @@ class ExchangeMethodTests {
         puzzle.agregarBaldosa(0,0,'r');
         puzzle.makeInvisibleTable(); // Tablero invisible
         assertFalse(puzzle.isTableVisible());
-    }   
+    }
+    
+    /**
+     * Test para revisar que se estan reubicando correctamente las baldosas con pegantes 
+     */
+    @Test
+    public void accordingFSShouldReubicateTileWhitGlue() {
+        startingBoard = new char[][]{
+            {'r', 'b', 'g'},
+            {'.', 'y', '.'},
+            {'.', '.', '.'}
+        };
+        // Crear una instancia de Puzzle y configurarlo
+        Puzzle puzzle = new Puzzle(startingBoard, startingBoard);
+        // Agregamos pegante en la posicion (1,1)
+        puzzle.addGlue(1,1);
+        
+        //reubicamos la baldosa (1,1) a la posicion (2,2)
+        puzzle.reubicarBaldosa(1,1,2,2);
+        	
+        //La baldosa se movió correctamente a la nueva posición
+        assertEquals('y', puzzle.getStartingBoard()[2][2], "La baldosa no se movió a la nueva posición.");
+        
+        //La posición original (1,1) está vacía
+        assertEquals('.', puzzle.getStartingBoard()[1][1], "La posición original no está vacía después de mover la baldosa.");
+        
+        //El pegamento fue eliminado de la posición original
+        assertFalse(glue.isGlued(1, 1), "El pegamento no se eliminó de la posición original.");
+        
+        // El pegamento fue añadido a la nueva posición de la baldosa
+        assertFalse(glue.isGlued(2, 2), "El pegamento no fue añadido a la nueva posición de la baldosa.");
+    }
+    
+    /**
+     * Test para revisar que las baldosas con glue se estan moviendo correctamente al ladear
+     */
+    
 }
 }

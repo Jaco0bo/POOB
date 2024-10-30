@@ -18,7 +18,6 @@ public class Puzzle {
     private Glue glue;
     private Glue endingGlue;
     private Tilt tilt;
-    private Hole hole;
     private boolean tableVisible = false;
     private int depth;
     
@@ -27,7 +26,6 @@ public class Puzzle {
         this.width = w;
         this.endingBoard = new char[height][width];
         this.startingBoard = new char[height][width]; // Inicializamos startingBoard vacío
-        this.hole = new Hole(startingTablero); // Cambiado para inicializar con el tablero
         this.tilt = new Tilt(startingBoard, glue);  // Pasar el agujero a Tilt
         this.depth = 5;
         
@@ -106,45 +104,6 @@ public class Puzzle {
         Canvas canvas = Canvas.getCanvas();
         canvas.wait(10);
     }
-
-    // Inicializa el tablero final (endingBoard) con baldosas de colores
-    private void initializeEndingBoard(char[][] board) {
-        Canvas canvas = Canvas.getCanvas();
-    
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                // Configura el color basado en el valor de la matriz
-                switch (board[i][j]) {
-                    case 'r':
-                        canvas.setForegroundColor("red");
-                        break;
-                    case 'g':
-                        canvas.setForegroundColor("green");
-                        break;
-                    case 'b':
-                        canvas.setForegroundColor("blue");
-                        break;
-                    case 'y':
-                        canvas.setForegroundColor("yellow");
-                        break;
-                    case '.':
-                        canvas.setForegroundColor("brown"); // Baldosa vacía o base
-                        break;
-                    default:
-                        canvas.setForegroundColor("gray"); // Para caracteres no especificados
-                        break;
-                }
-                // Dibuja cada baldosa en el tablero final
-                canvas.drawRectangle(
-                    (width * 30) + j * 30, // Posición en x
-                    20 + i * 30,           // Posición en y
-                    28,                    // Ancho de la baldosa
-                    28                     // Altura de la baldosa
-                );
-            }
-        }
-        canvas.wait(10); // Opcional para un pequeño retraso en la visualización
-    }    
     
     /** 
      * Elimina baldosas
@@ -187,7 +146,10 @@ public class Puzzle {
             }
             char baldosa = startingBoard[filaActual][columnaActual];
             if (baldosa != '.') { // Verificar que la baldosa no esté vacía
-                
+                System.out.println("Antes de mover pegamento:");
+                for (char[] fila : startingBoard) {
+                    System.out.println(Arrays.toString(fila));
+                }
                 // Almacenar las posiciones de los pegantes adyacentes
                 List<int[]> posicionesPegantes = new ArrayList<>();
                 agregarPegantesAdyacentes(filaActual, columnaActual, posicionesPegantes);
@@ -234,6 +196,11 @@ public class Puzzle {
                 System.out.println("Baldosa reubicada a (" + nuevaFila + ", " + nuevaColumna + ")");
     
                 // Redibujar el tablero
+                System.out.println("Estado de startingBoard después de mover la baldosa:");
+                for (char[] fila : startingBoard) {
+                    System.out.println(Arrays.toString(fila));
+                }
+
                 startingTablero.drawBoard(glue);
                 Canvas canvas = Canvas.getCanvas(); // Obtener Canvas
                 canvas.getCanvasPane().repaint(); // Forzar redibujado
@@ -369,7 +336,6 @@ public class Puzzle {
         endingBoard = tempBoard;
     
         // Clonar los estados del pegamento
-        boolean[][] glueStateStarting = glue.cloneGlueState(); // Estado antes de intercambiar
         boolean[][] glueStateEnding = glue.cloneGlueState(); // Estado antes de intercambiar
     
         // Actualizar el estado del pegamento
@@ -387,6 +353,7 @@ public class Puzzle {
         canvas.getCanvasPane().repaint(); // Forzar redibujado
     }
 
+    @SuppressWarnings("unused")
     private void printGlueState(boolean[][] glueState) {
         for (boolean[] row : glueState) {
             System.out.println(Arrays.toString(row));
@@ -503,7 +470,6 @@ public class Puzzle {
     
     public int[][] fixedTiles() {
         List<int[]> fixedTilesList = new ArrayList<>();
-        Canvas canvas = Canvas.getCanvas();
         makeVisibleTable();
         
         // Sincronizar el tablero de Tilt con el de Puzzle
@@ -533,7 +499,6 @@ public class Puzzle {
         new Thread(() -> {
             char colorOriginal = startingBoard[fila][columna];
             if (colorOriginal != '.') {
-                Canvas canvas = Canvas.getCanvas();  // Obtener la referencia al canvas
                 for (int k = 0; k < 21; k++) {  // Número de veces que queremos que parpadee
                     eliminarBaldosa(fila, columna);
                     agregarBaldosa(fila, columna, 'w'); // 'w' para blanco
@@ -582,6 +547,7 @@ public class Puzzle {
     }
   
     // Sobrecarga de misplacedTiles para evaluar tableros simulados
+    @SuppressWarnings("unused")
     private int misplacedTiles(char[][] board) {
         int count = 0;
         for (int i = 0; i < board.length; i++) {

@@ -7,12 +7,9 @@
  */
 public class Glue{
     private Rectangle tablero;
-    private Rectangle endingTablero;
     private char[][] board;
-    private char[][] endingBoard;
     private boolean[][] glueApplied;
     private boolean [][] glueAppliedEnding;
-    private boolean[][] newGlueApplied;
     private int glueSize = 10;  
     private int tileSize = 30;   
     /**
@@ -27,9 +24,6 @@ public class Glue{
     public Glue(char[][] board, Rectangle tablero, char[][] endingBoard, Rectangle endingTablero){
         this.board = board;
         this.tablero = tablero;
-        this.endingBoard = endingBoard;
-        this.endingTablero = endingTablero;
-    
         // Inicializar las matrices de pegamento para ambos tableros
         this.glueApplied = new boolean[board.length][board[0].length];
         this.glueAppliedEnding = new boolean[endingBoard.length][endingBoard[0].length];

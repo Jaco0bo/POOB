@@ -12,11 +12,10 @@ import java.util.*;
 
 public class Tilt {
     private char[][] board; // Referencia al tablero principal
-    private Glue glue;
+
     
     public Tilt(char[][] board, Glue glue){
         this.board = board; // Usar el tablero principal
-        this.glue = glue; 
     }
     
     public void tilt(String direction) {

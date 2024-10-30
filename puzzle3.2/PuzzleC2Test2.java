@@ -59,10 +59,7 @@ public class PuzzleC2Test2
      */
     public void accordingFSShouldCalculateTheNumberOfInamovibleTiles() {
         puzzle.makeInvisibleTable();
-        // Llamar al método fixedTiles
-        int[][] fixedTiles = puzzle.fixedTiles();
-        // Las baldosa en (1, 1) esta fija ya que no se puede mover
-        int[][] expectedFixedTiles = {{ 1, 1 }};
+
         // Como es inamovible en el metodo canMoveTile de la clase Tilt deberia ser false
         assertFalse(tilt.canMoveTile(1,1),"La baldosa en (1, 1) no debería poder moverse.");
     }
@@ -172,14 +169,6 @@ public class PuzzleC2Test2
         // Esperar un tiempo suficiente para que se realice al menos un parpadeo
         Thread.sleep(150); // Ajusta el tiempo según sea necesario
 
-        // Verificar el estado del tablero después de un parpadeo
-        char[][] expectedBoard = {
-            {'.','r','.','.'},
-            {'r','w','y','b'},
-            {'.','b','.','.'},
-            {'.','y','r','.'}
-        };
- 
         // Verifica solamente la posicion [1][1] en vez de todo el tablero 
         assertEquals('w', puzzle.getStartingBoard()[1][1], "La baldosa debería ser blanca después de parpadear.");
 
