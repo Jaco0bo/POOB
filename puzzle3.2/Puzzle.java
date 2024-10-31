@@ -146,7 +146,7 @@ public class Puzzle {
             }
             char baldosa = startingBoard[filaActual][columnaActual];
             if (baldosa != '.') { // Verificar que la baldosa no esté vacía
-                System.out.println("Antes de mover pegamento:");
+                System.out.println("Antes de mover la baldosa:");
                 for (char[] fila : startingBoard) {
                     System.out.println(Arrays.toString(fila));
                 }
@@ -437,7 +437,7 @@ public class Puzzle {
         canvas.getCanvasPane().repaint(); 
         canvas.wait(10);
     
-        System.out.println("Tablero inclinado hacia " + direction);
+        System.out.println("Tablero inclinado hacia " + direction); 
         System.out.println(Arrays.deepToString(startingBoard));
     }
 

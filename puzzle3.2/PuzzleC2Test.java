@@ -348,7 +348,7 @@ class ExchangeMethodTests {
         
         //reubicamos la baldosa (1,1) a la posicion (2,2)
         puzzle.reubicarBaldosa(1,1,2,2);
-        	
+            
         //La baldosa se movió correctamente a la nueva posición
         assertEquals('y', puzzle.getStartingBoard()[2][2], "La baldosa no se movió a la nueva posición.");
         
@@ -362,9 +362,7 @@ class ExchangeMethodTests {
         assertFalse(glue.isGlued(2, 2), "El pegamento no fue añadido a la nueva posición de la baldosa.");
     }
     
-    /**
-     * Test para revisar que las baldosas con glue se estan moviendo correctamente al ladear
-     */
+
     
 }
 }

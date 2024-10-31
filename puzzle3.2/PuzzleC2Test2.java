@@ -103,7 +103,7 @@ public class PuzzleC2Test2
             {'r','g','y','b'},
             {'.','.','.','b'},
             {'.','.','y','r'}
-
+ 
         };
         
         // Obtener el tablero actual después de la inclinación
