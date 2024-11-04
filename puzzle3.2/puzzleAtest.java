@@ -78,7 +78,7 @@ class PuzzleATest {
         // configuracion del tablero luego de agregar las baldosas
         expectedBoard = new char [][] {
 		    {'.', 'r', '.','.'},
-	        {'r', 'y', 'y','b'},
+	        {'r', 'y', 'y','b'}, 
 	        {'.', 'b', '.','.'},
 	        {'.', 'y', 'r','g'}
         };

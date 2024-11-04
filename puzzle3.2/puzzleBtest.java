@@ -12,7 +12,7 @@ import java.util.Scanner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class PuzzleBtest {
+class PuzzleBTest {
     private Puzzle puzzle;
     private char[][] startingBoard;
     private char[][] endingBoard;
@@ -55,7 +55,7 @@ class PuzzleBtest {
      *   4. Verificar que el tablero final coincide con la configuración deseada.
      */
     @Test
-    public void PruebaDeAceptacion2() {
+    public void pruebaDeAceptacion2() {
         Scanner scanner = new Scanner(System.in);
 
         // Imprimir el tablero inicial vacío
