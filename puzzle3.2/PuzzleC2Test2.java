@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
  * @author  Camilo Fernandez y Andres Sepulveda
  * @version 1.0
  */
-public class PuzzleC2Test2
+	public class PuzzleC2Test2
 {
     private Puzzle puzzle;
     private char[][] startingBoard;

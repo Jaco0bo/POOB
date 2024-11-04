@@ -8,16 +8,20 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 
 /**
  * 
  */
-class puzzleAtest {
+class PuzzleATest {
 	private Puzzle puzzle;
 	private char [][] startingBoard;
 	private char [][] endingBoard;
 	private char [][] expectedBoard;
 	private PuzzleContest puzzleContest;
+	private static final Logger LOGGER = Logger.getLogger(PuzzleATest.class.getName());
 
 	/**
 	 * @throws java.lang.Exception
@@ -57,7 +61,7 @@ class puzzleAtest {
      *   7. Verificar que el tablero 'startingBoard' alcanzo la configuracion final de 'endingBoard'.
      */	
 	@Test
-	void PruebaDeAceptacion1() throws InterruptedException {
+	void pruebaDeAceptacion1() throws InterruptedException {
 		Scanner scanner = new Scanner(System.in);
 		// Agregar baldosas
 		puzzle.agregarBaldosa(0, 1, 'r'); // Agregamos una baldosa roja en la posicion (0,1).
@@ -82,11 +86,14 @@ class puzzleAtest {
         // Comprobamos que startingBoard tenga las nuevas baldosas
         assertArrayEquals(expectedBoard, puzzle.getStartingBoard(), "Luego de crear las baldosas no quedo como expectedBoard");
         for (char[] fila : startingBoard) {
-            System.out.println(Arrays.toString(fila));
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.info(Arrays.toString(fila));
+            }
         }
+
         
 	    // Preguntar al usuario si acepta el resultado luego de agregar las baldosas
-        System.out.println("¿Aceptas el resultado tras crear las baldosas iniciales? (S/N)");
+        LOGGER.info("¿Aceptas el resultado tras crear las baldosas iniciales? (S/N)");
         String respuesta = scanner.nextLine();
         assertEquals("S", respuesta.toUpperCase(), "El usuario no aceptó el resultado tras crear baldosas.");
         
@@ -108,7 +115,7 @@ class puzzleAtest {
         assertEquals('.', startingBoard [3][3], "la baldosa no esta vacia");
         
         // Preguntar al usuario si acepta el resultado luego de agregar las baldosas
-        System.out.println("¿Aceptas el resultado tras eliminar y reubicar baldosas? (S/N)");
+        LOGGER.info("¿Aceptas el resultado tras eliminar y reubicar baldosas? (S/N)");
         String respuesta2 = scanner.nextLine();
         assertEquals("S", respuesta2.toUpperCase(), "El usuario no aceptó el resultado tras eliminar y reubicar baldosas.");
         
@@ -121,7 +128,7 @@ class puzzleAtest {
         Thread.sleep(200); // Esperar 200ms 
         
      // Preguntar al usuario si acepta el resultado final
-        System.out.println("¿Aceptas el resultado final luego de resolver el puzzle? (S/N)");
+        LOGGER.info("¿Aceptas el resultado final luego de resolver el puzzle? (S/N)");
         String respuesta3 = scanner.nextLine();
         assertEquals("S", respuesta3.toUpperCase(), "El usuario no aceptó el resultado final, startingBoard no es igual a endingBoard.");
         scanner.close();
