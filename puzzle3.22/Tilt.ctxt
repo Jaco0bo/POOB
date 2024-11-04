@@ -1,0 +1,26 @@
+#BlueJ class context
+comment0.target=Tilt
+comment0.text=\r\n\ Esta\ clase\ Tilt\ inclina\ el\ tablero\ en\ diferentes\ direcciones\ y\ mueve\ las\ baldosas\ en\ esa\ direcci\u00F3n.\r\n\ Funciona\ con\ un\ tablero\ representado\ como\ una\ matriz\ de\ caracteres\ donde\ las\ baldosas\ se\ representan\r\n\ con\ cualquier\ car\u00E1cter\ que\ no\ sea\ '.'\ (que\ se\ usa\ para\ representar\ espacios\ vac\u00EDos).\r\n\ Ahora\ incluye\ l\u00F3gica\ de\ pegamento\ para\ mover\ baldosas\ adyacentes\ pegadas.\r\n\ \r\n\ @author\ Camilo\ Andres\ Fernandez\ Diaz\ \r\n\ @author\ Andres\ Jacobo\ Sepulveda\r\n\ @version\ 2.0\r\n
+comment1.params=board\ glue
+comment1.target=Tilt(char[][],\ Glue)
+comment10.params=row\ col
+comment10.target=boolean\ canMoveTile(int,\ int)
+comment11.params=
+comment11.target=char[][]\ getBoard()
+comment2.params=direction
+comment2.target=void\ tilt(java.lang.String)
+comment3.params=
+comment3.target=void\ tiltUp()
+comment4.params=
+comment4.target=void\ tiltDown()
+comment5.params=
+comment5.target=void\ tiltLeft()
+comment6.params=
+comment6.target=void\ tiltRight()
+comment7.params=board
+comment7.target=void\ setBoard(char[][])
+comment8.params=fila\ columna\ direction
+comment8.target=int\ getNewRow(int,\ int,\ java.lang.String)
+comment9.params=fila\ columna\ direction
+comment9.target=int\ getNewCol(int,\ int,\ java.lang.String)
+numComments=12
