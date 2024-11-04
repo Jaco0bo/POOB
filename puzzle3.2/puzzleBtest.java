@@ -9,10 +9,14 @@
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class PuzzleBTest {
+class PuzzleBtTest {
+    private static final Logger logger = Logger.getLogger(PuzzleBtTest.class.getName());
+    
     private Puzzle puzzle;
     private char[][] startingBoard;
     private char[][] endingBoard;
@@ -55,20 +59,20 @@ class PuzzleBTest {
      *   4. Verificar que el tablero final coincide con la configuración deseada.
      */
     @Test
-    public void pruebaDeAceptacion2() {
+    public void PruebaDeAceptacion2() {
         Scanner scanner = new Scanner(System.in);
 
         // Imprimir el tablero inicial vacío
-        System.out.println("Tablero inicial vacío:");
+        logger.info("Tablero inicial vacío:");
         printBoard(startingBoard);
 
         // Paso 1: Confirmación del estado inicial del tablero vacío
-        System.out.println("¿Aceptas el estado inicial del tablero vacío? (S/N)");
+        logger.info("¿Aceptas el estado inicial del tablero vacío? (S/N)");
         String respuesta = scanner.nextLine();
         assertEquals("S", respuesta.toUpperCase(), "El usuario no aceptó el estado inicial.");
 
         // Paso 2: Agregar baldosas en posiciones necesarias según el `endingBoard`
-        System.out.println("Agregando baldosas en el tablero para acercarse a la configuración final...");
+        logger.info("Agregando baldosas en el tablero para acercarse a la configuración final...");
         
         puzzle.agregarBaldosa(0, 0, 'r'); // Agregar roja en (0,0)
         puzzle.agregarBaldosa(0, 1, 'y'); // Agregar amarilla en (0,1)
@@ -83,51 +87,50 @@ class PuzzleBTest {
         puzzle.agregarBaldosa(4, 0, 'g'); // Agregar verde en (4,0)
 
         // Imprimir el tablero después de agregar las baldosas
-        System.out.println("Tablero después de agregar las baldosas:");
+        logger.info("Tablero después de agregar las baldosas:");
         printBoard(puzzle.getStartingBoard());
 
         // Confirmación del usuario después de agregar las baldosas
-        System.out.println("¿Aceptas el estado del tablero tras agregar las baldosas? (S/N)");
+        logger.info("¿Aceptas el estado del tablero tras agregar las baldosas? (S/N)");
         respuesta = scanner.nextLine();
         assertEquals("S", respuesta.toUpperCase(), "El usuario no aceptó el estado tras agregar las baldosas.");
 
         // Paso 3: Desordenar algunas baldosas intencionalmente
-        System.out.println("Desordenando baldosas para simular errores...");
+        logger.info("Desordenando baldosas para simular errores...");
         puzzle.reubicarBaldosa(0, 1, 1, 4); // Mover amarilla de (0,1) a (1,4)
         puzzle.reubicarBaldosa(1, 0, 4, 2); // Mover amarilla de (1,0) a (4,2)
         puzzle.reubicarBaldosa(2, 0, 3, 3); // Mover roja de (2,0) a (3,3)
 
         // Imprimir el tablero después de desordenar las baldosas
-        System.out.println("Tablero después de desordenar las baldosas:");
+        logger.info("Tablero después de desordenar las baldosas:");
         printBoard(puzzle.getStartingBoard());
 
         // Confirmación del usuario después de desordenar las baldosas
-        System.out.println("¿Aceptas el estado del tablero tras desordenar las baldosas? (S/N)");
+        logger.info("¿Aceptas el estado del tablero tras desordenar las baldosas? (S/N)");
         respuesta = scanner.nextLine();
         assertEquals("S", respuesta.toUpperCase(), "El usuario no aceptó el estado tras desordenar las baldosas.");
 
         // Paso 4: Resolver el tablero usando dfsTilt para realizar inclinaciones inteligentes
-        System.out.println("Resolviendo el tablero mediante inclinaciones inteligentes...");
+        logger.info("Resolviendo el tablero mediante inclinaciones inteligentes...");
         boolean solved = puzzle.findSolution(); // `findSolution` ejecutará `dfsTilt` para resolver el tablero
 
         // Verificar que el tablero se ha resuelto correctamente
         assertTrue(solved, "No se pudo resolver el tablero final mediante dfsTilt.");
 
         // Imprimir el tablero después de la solución automática
-        System.out.println("Tablero después de aplicar dfsTilt:");
+        logger.info("Tablero después de aplicar dfsTilt:");
         printBoard(puzzle.getStartingBoard());
 
         // Confirmación final del usuario
-        System.out.println("¿Aceptas el estado final del tablero? (S/N)");
+        logger.info("¿Aceptas el estado final del tablero? (S/N)");
         respuesta = scanner.nextLine();
         assertEquals("S", respuesta.toUpperCase(), "El usuario no aceptó el estado final del tablero.");
-
     }
 
     // Método auxiliar para imprimir el tablero
     private void printBoard(char[][] board) {
         for (char[] row : board) {
-            System.out.println(java.util.Arrays.toString(row));
+            logger.info(java.util.Arrays.toString(row));
         }
     }
 }
