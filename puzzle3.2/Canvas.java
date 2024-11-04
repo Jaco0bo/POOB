@@ -31,11 +31,7 @@ public class Canvas {
     }
 
     // ----- instance part -----
-<<<<<<< HEAD
     
-=======
-
->>>>>>> dcce73205ce5b0763678950e5ca313fa3f24853f
     private JFrame frame; // Main frame that holds the canvas.
     private CanvasPane canvas; // Panel where shapes are drawn.
     private Graphics2D graphic; // Graphics context for drawing on the canvas.
@@ -239,9 +235,4 @@ public class Canvas {
             graphic.fill(shape);
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
-
->>>>>>> dcce73205ce5b0763678950e5ca313fa3f24853f
