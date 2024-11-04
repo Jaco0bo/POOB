@@ -9,18 +9,24 @@ import javax.swing.*;
  */
 
 public class Puzzle {
-    private int width;  
-    private int height;
-    private Rectangle startingTablero;
-    private Rectangle endingTablero;
-    private char[][] startingBoard;
-    private char[][] endingBoard;
-    private Glue glue;
-    private Glue endingGlue;
-    private Tilt tilt;
-    private boolean tableVisible = false;
-    private int depth;
+    private int width;  // Ancho del tablero
+    private int height; // Altura del tablero
+    private Rectangle startingTablero; // Tablero inicial
+    private Rectangle endingTablero; // Tablero final
+    private char[][] startingBoard; // Representación del tablero inicial
+    private char[][] endingBoard; // Representación del tablero final
+    private Glue glue; // Pegamento para el tablero inicial
+    private Glue endingGlue; // Pegamento para el tablero final
+    private Tilt tilt; // Objeto para manejar inclinaciones
+    private boolean tableVisible = false; // Indica si el tablero es visible
+    private int depth; // Profundidad máxima para búsqueda de soluciones
     
+    /**
+     * Constructor que inicializa el Puzzle con dimensiones específicas.
+     * 
+     * @param h Altura del tablero.
+     * @param w Ancho del tablero.
+     */
     public Puzzle(int h, int w) {
         this.height = h;
         this.width = w;
@@ -55,7 +61,12 @@ public class Puzzle {
         startingTablero.drawBoard(glue);
         endingTablero.drawBoard(endingGlue);
     }
-
+    
+    /**
+     * Inicializa un tablero vacío con el carácter '.'.
+     * 
+     * @param board Tablero a inicializar.
+     */
     private void initializeBoard(char[][] board) {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -64,6 +75,11 @@ public class Puzzle {
         }
     }
     
+    /**
+     * Constructor que inicializa el Puzzle con un tablero final proporcionado.
+     * 
+     * @param endingBoard Tablero final a utilizar en el Puzzle.
+     */
     public Puzzle(char[][] endingBoard) {       
         // Llama al primer constructor con las dimensiones del tablero final
         this(endingBoard.length, endingBoard[0].length);
@@ -81,6 +97,12 @@ public class Puzzle {
     }
     
     // Constructor 3: Recibe el tablero inicial y final
+    /**
+     * Constructor que inicializa el Puzzle con tableros inicial y final proporcionados.
+     * 
+     * @param startingBoard Tablero inicial.
+     * @param endingBoard   Tablero final.
+     */
     public Puzzle(char[][] startingBoard, char[][] endingBoard) {
         // Llamamos al segundo constructor para inicializar el tablero final
         this(endingBoard);
@@ -134,6 +156,14 @@ public class Puzzle {
         }
     }
     
+    /**
+     * Reubica una baldosa desde una posición actual a una nueva posición.
+     * 
+     * @param filaActual     Fila de la baldosa actual.
+     * @param columnaActual  Columna de la baldosa actual.
+     * @param nuevaFila      Nueva fila para la baldosa.
+     * @param nuevaColumna   Nueva columna para la baldosa.
+     */
     public void reubicarBaldosa(int filaActual, int columnaActual, int nuevaFila, int nuevaColumna) {
         System.out.println("Intentando reubicar baldosa desde (" + filaActual + ", " + columnaActual + ") a (" + nuevaFila + ", " + nuevaColumna + ")");
     
@@ -236,7 +266,14 @@ public class Puzzle {
             posicionesPegantes.add(new int[]{fila, columna + 1});
         }
     }
-
+    
+    /**
+     * Agrega una baldosa de un color específico en la posición dada.
+     * 
+     * @param fila    Fila de la nueva baldosa.
+     * @param columna Columna de la nueva baldosa.
+     * @param color   Color de la baldosa a agregar.
+     */
     public void agregarBaldosa(int fila, int columna, char color) {
         if (fila >= 0 && fila < startingBoard.length && columna >= 0 && columna < startingBoard[0].length) {
             if (startingBoard[fila][columna] != '.') {
@@ -306,18 +343,33 @@ public class Puzzle {
         }
     }
     
+    /**
+     * Añade pegamento en una posición específica.
+     * 
+     * @param fila    Fila donde se agregará el pegamento.
+     * @param columna Columna donde se agregará el pegamento.
+     */
     public void addGlue(int fila, int columna){
         glue.adGlue(fila, columna);
         Canvas canvas = Canvas.getCanvas(); // Obtener Canvas
         canvas.getCanvasPane().repaint(); // Forzar redibujado
     }
     
+    /**
+     * Elimina el pegamento de una posición específica.
+     * 
+     * @param fila    Fila de la que se eliminará el pegamento.
+     * @param columna Columna de la que se eliminará el pegamento.
+     */
     public void removeGlue(int fila, int columna){
         glue.adRemoveGlue(fila, columna);
         Canvas canvas = Canvas.getCanvas(); // Obtener Canvas
         canvas.getCanvasPane().repaint(); // Forzar redibujado
     }
     
+    /**
+     * Intercambia los contenidos y posiciones de los tableros inicial y final.
+     */
     public void exchange() {
         // Intercambiar referencias de los tableros
         Rectangle tempTablero = startingTablero; // Variable temporal
@@ -360,7 +412,11 @@ public class Puzzle {
         }
     }
 
-
+    /**
+     * Inclina el tablero en la dirección dada.
+     * 
+     * @param direction Dirección en la que se inclinará el tablero.
+     */
     public void tiltBoard(String direction) {
         // Establecer el tablero actual en el objeto Tilt
         tilt.setBoard(startingBoard);
@@ -450,7 +506,11 @@ public class Puzzle {
         System.exit(0); 
     }
     
-    // Método para obtener el número de baldosas que están mal colocadas
+    /**
+     * Obtiene el número de baldosas que están mal colocadas.
+     * 
+     * @return Número de baldosas fuera de lugar.
+     */
     public int misplacedTiles() {
         if (endingBoard == null) {
             return 0; // O lanzar una excepción
@@ -468,6 +528,11 @@ public class Puzzle {
         return count;
     }
     
+    /**
+     * Devuelve las posiciones de las baldosas que están fijadas en su lugar.
+     * 
+     * @return Array de posiciones de las baldosas fijas.
+     */
     public int[][] fixedTiles() {
         List<int[]> fixedTilesList = new ArrayList<>();
         makeVisibleTable();
@@ -494,6 +559,12 @@ public class Puzzle {
         return fixedTilesList.toArray(new int[fixedTilesList.size()][]);
     }
     
+    /**
+     * Hace parpadear una baldosa en una posición específica.
+     * 
+     * @param fila    Fila de la baldosa.
+     * @param columna Columna de la baldosa.
+     */
     public void parpadearBaldosa(int fila, int columna) {
         // Crear un hilo para manejar el parpadeo de la baldosa
         new Thread(() -> {
@@ -524,11 +595,19 @@ public class Puzzle {
         }).start();  // Iniciar el hilo
     }
     
+    /**
+     * Inclina el tablero según la profundidad establecida.
+     */
     public void tilt() {
         dfsTilt(startingBoard, depth);
     }
     
-    // Método para aplicar un movimiento (tilt) al tablero
+    /**
+     * Realiza un movimiento de inclinación en el tablero.
+     * 
+     * @param board     Tablero a inclinar.
+     * @param direction Dirección en la que se inclinará el tablero.
+     */
     private void tilt(char[][] board, String direction) {
         // Establecer el tablero proporcionado en el objeto Tilt
         tilt.setBoard(board);
@@ -546,7 +625,12 @@ public class Puzzle {
         canvas.wait(10);
     }
   
-    // Sobrecarga de misplacedTiles para evaluar tableros simulados
+    /**
+     * Método auxiliar para contar las baldosas mal colocadas en un tablero dado.
+     * 
+     * @param board Tablero a evaluar.
+     * @return Número de baldosas fuera de lugar.
+     */
     @SuppressWarnings("unused")
     private int misplacedTiles(char[][] board) {
         int count = 0;
@@ -560,6 +644,13 @@ public class Puzzle {
         return count;
     }
     
+    /**
+     * Ejecuta un algoritmo DFS para inclinar el tablero.
+     * 
+     * @param board Tablero a evaluar.
+     * @param depth Profundidad máxima de la búsqueda.
+     * @return true si se encuentra una solución, false en caso contrario.
+     */
     protected boolean dfsTilt(char[][] board, int depth) {
         // Condición de parada: si el tablero es igual al tablero final
         if (Arrays.deepEquals(board, endingBoard)) {
@@ -610,7 +701,11 @@ public class Puzzle {
         return false;  // No se encontró solución en esta rama
     }
 
-    // Método auxiliar para convertir el tablero a un String para almacenar en el conjunto
+    /** Convierte el tablero a una cadena para facilitar su comparación en DFS.
+     * 
+     * @param board Tablero a convertir.
+     * @return Cadena que representa el estado del tablero.
+     */
     private String boardToString(char[][] board) {
         StringBuilder sb = new StringBuilder();
         for (char[] row : board) {
@@ -621,7 +716,12 @@ public class Puzzle {
         return sb.toString();
     }
     
-    // Método auxiliar para copiar un tablero
+    /**
+     * Crea una copia del tablero dado.
+     * 
+     * @param board Tablero a copiar.
+     * @return Copia del tablero.
+     */
     private char[][] copyBoard(char[][] board) {
         char[][] newBoard = new char[board.length][board[0].length];
         for (int i = 0; i < board.length; i++) {
@@ -630,23 +730,48 @@ public class Puzzle {
         return newBoard;
     }
     
-    public int getDepth(){
+    /**
+     * Obtiene la profundidad de búsqueda.
+     * 
+     * @return Profundidad actual de búsqueda.
+     */
+    public int getDepth() {
         return depth;
     }
     
-    public char[][] getStartingBoard(){
+    /**
+     * Obtiene el tablero inicial.
+     * 
+     * @return Tablero inicial.
+     */
+    public char[][] getStartingBoard() {
         return startingBoard;
     }
     
-    public char[][] getEndingBoard(){
+    /**
+     * Obtiene el tablero final.
+     * 
+     * @return Tablero final.
+     */
+    public char[][] getEndingBoard() {
         return endingBoard;
-    }  
+    } 
     
-    public boolean findSolution(){
+    /**
+     * Busca una solución para el puzzle.
+     * 
+     * @return true si se encuentra una solución, false en caso contrario.
+     */
+    public boolean findSolution() {
         return dfsTilt(startingBoard, depth);
     }
     
-    public boolean isTableVisible(){
+    /**
+     * Verifica si el tablero es visible.
+     * 
+     * @return true si el tablero es visible, false en caso contrario.
+     */
+    public boolean isTableVisible() {
         return tableVisible;
     }
 }

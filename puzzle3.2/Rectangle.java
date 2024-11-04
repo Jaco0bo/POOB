@@ -9,7 +9,7 @@
  
 public class Rectangle{
 
-    public static int EDGES = 4;
+    public static final int EDGES = 4;
     
     private int height;
     private int width;

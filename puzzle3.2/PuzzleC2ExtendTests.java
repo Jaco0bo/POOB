@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
  * @author  Camilo Fernandez y Andres Sepulveda
  * @version 1.0
  */
-	public class PuzzleC2Test2
+	public class PuzzleC2ExtendTests
 {
     private Puzzle puzzle;
     private char[][] startingBoard;
@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
     /**
      * Default constructor for test class PuzzleC2Test2
      */
-    public PuzzleC2Test2()
+    public PuzzleC2ExtendTests()
     {
     }
 

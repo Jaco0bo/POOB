@@ -28,7 +28,7 @@ class PuzzleATest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
-		// Initialize starting y ending board
+		// Initialize starting y ending board 
 		startingBoard = new char [][] {
 		    {'.', '.', '.','.'},
 	        {'.', '.', '.','.'},
@@ -61,7 +61,7 @@ class PuzzleATest {
      *   7. Verificar que el tablero 'startingBoard' alcanzo la configuracion final de 'endingBoard'.
      */	
 	@Test
-	void pruebaDeAceptacion1() throws InterruptedException {
+	public void pruebaDeAceptacion1() throws InterruptedException {
 		Scanner scanner = new Scanner(System.in);
 		// Agregar baldosas
 		puzzle.agregarBaldosa(0, 1, 'r'); // Agregamos una baldosa roja en la posicion (0,1).
