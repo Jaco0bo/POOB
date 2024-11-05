@@ -13,8 +13,10 @@ import java.util.*;
  *
  * @version: 1.6 (shapes)
  */
-public class Canvas {
-    // Singleton instance of the Canvas class.
+public final class Canvas {
+    /**
+     * Singleton instance of the Canvas class.
+     */
     private static Canvas canvasSingleton;
 
     /**
@@ -145,7 +147,7 @@ public class Canvas {
      * 
      * @param milliseconds The number of milliseconds to wait.
      */
-    public void wait(int milliseconds) {
+    public void wait(final int milliseconds) {
         try {
             Thread.sleep(milliseconds);
         } catch (Exception e) {
@@ -170,7 +172,7 @@ public class Canvas {
      * Erase the whole canvas. (Does not repaint.)
      */
     private void erase() {
-        Color original = graphic.getColor();
+        final Color original = graphic.getColor();
         graphic.setColor(backgroundColour);
         Dimension size = canvas.getSize();
         graphic.fill(new java.awt.Rectangle(0, 0, size.width, size.height));
@@ -194,7 +196,7 @@ public class Canvas {
      * @param width  The width of the rectangle.
      * @param height The height of the rectangle.
      */
-    public void drawRectangle(int x, int y, int width, int height) {
+    public void drawRectangle(final int x,final int y,final int width,final int height) {
         if (graphic != null) {
             graphic.fillRect(x, y, width, height);
         }
