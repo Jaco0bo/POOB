@@ -35,7 +35,7 @@ public class POOBvsZombiesGUI extends JFrame {
         contentPane.setLayout(new BorderLayout());
         contentPane.setBackground(new Color(8, 105, 14));
         setContentPane(contentPane);
-        ImageIcon icon = new ImageIcon("C:\\Users\\adm\\Desktop\\POOBvsZombies\\Imagenes\\Menu_proyecto.png");
+        ImageIcon icon = new ImageIcon("C:\\Users\\adm\\Desktop\\POOBvsZombies\\POOB\\src\\Imagenes\\Menu_proyecto.png");
         JLabel imageLabel = new JLabel(icon);
         contentPane.add(imageLabel, BorderLayout.NORTH); // Añadir la imagen en la parte superior
 
