@@ -1,5 +1,8 @@
 package presentacion;
 
+import javax.sound.sampled.*;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -30,6 +33,9 @@ public class POOBvsZombiesGUI extends JFrame {
 
     // Configura el menú
     private void prepareMenu() {
+        // Ejecuta la musica del menu
+        playBackgroundMusic("C:\\Users\\adm\\Desktop\\POOBvsZombies\\POOB\\src\\musica\\menu_theme.wav");
+
         // Panel principal
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout());
@@ -159,6 +165,26 @@ public class POOBvsZombiesGUI extends JFrame {
         );
         if (opcion == JOptionPane.YES_OPTION) {
             System.exit(0);  // Cerrar la aplicación si el usuario confirma
+        }
+    }
+
+    public void playBackgroundMusic(String filePath) {
+        try {
+            // Carga el archivo de audio
+            File audioFile = new File(filePath);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+
+            // Obtén un clip de sonido y cárgalo
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+
+            // Configura el clip para reproducirse en bucle
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+
+            // Reproduce el clip
+            clip.start();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
         }
     }
 
